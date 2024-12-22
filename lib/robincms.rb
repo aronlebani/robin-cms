@@ -3,12 +3,11 @@
 require 'sinatra/base'
 
 require_relative 'version'
-require_relative 'model'
+require_relative 'collection'
 
 module RobinCMS
   class CMS < Sinatra::Base
     set :sessions, true
-    set :public_folder, File.join(__dir__, 'public')
     set :views, File.join(__dir__, 'views')
 
     get '/login' do
@@ -23,7 +22,7 @@ module RobinCMS
 
       session['authenticated'] = true
 
-      redirect '/admin'
+      redirect '/collections'
     end
 
     get '/logout' do
@@ -32,64 +31,68 @@ module RobinCMS
       redirect '/login'
     end
 
-    get '/admin' do
-      @articles = Article.all
-
-      erb :admin
+    get '/collections' do
+      erb :collections
     end
 
-    get '/admin/article' do
+    get '/collections/:c_id' do
+      @collection = $cfg.collections.find { |c| c.id == params['c_id'] }
+
+      erb :collection
+    end
+
+    get '/collections/:c_id/item' do
+      @collection = $cfg.collections.find { |c| c.id == params['c_id'] }
+
       if params['id']
-        @article = Article.find(params['id'])
+        @item = Item.find(params['id'], params['c_id'])
 
-        return 404 unless @article
-
-        erb :article
+        return 404 unless @item
       else
-        @article = Article.new
-
-        erb :article
+        @item = Item.new(nil, params['c_id'])
       end
+
+      erb :collection_item
     end
 
-    post '/admin/article' do
+    post '/collections/:c_id/item' do
       if params['id']
-        @article = Article.find(params['id'])
+        @item = Item.find(params['id'], params['c_id'])
 
-        return 404 unless @article
+        return 404 unless @item
 
-        @article.content = params['content']
-        @article.meta = params
-        @article.update
+        @item.fields = params
+        @item.update
       else
+        # TODO - figure out how to name file. Title field is not required.
         id = make_stub(params['title'])
 
-        if Article.find(id)
-          @error = 'An article with the same name already exists'
+        if Item.find(id, params['c_id'])
+          @error = 'An item with the same name already exists'
           erb :error
         end
 
-        Article.create(id, params['content'], meta)
+        Item.create(id, params['c_id'], fields)
       end
 
-      redirect '/admin'
+      redirect '/collections'
     end
 
-    post '/admin/article/delete' do
+    post '/collections/:c_id/delete' do
       if params['id']
-        @article = Article.find(params['id'])
+        @item = Item.find(params['id'], params['collection_id'])
 
-        return 404 unless @article
+        return 404 unless @item
 
-        @article.delete
+        @item.delete
       else
         return 404
       end
 
-      redirect '/admin'
+      redirect '/collections'
     end
 
-    before /\/admin/ do
+    before /\/collections/ do
       unless session['authenticated']
         redirect '/login'
       end

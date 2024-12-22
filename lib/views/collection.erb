@@ -1,0 +1,11 @@
+<h2><%= @collection['label'] %></h2>
+<ul>
+  <% for item in @collection['items'] %>
+    <li>
+      <a href="/collections/<%= @collection['name'] %>?id=<%= item.id %>">
+        <%= item['label'] %>
+      </a>
+    </li>
+  <% end %>
+  <a href="/collections/<%= @collection['name'] %>">New article</a>
+</ul>

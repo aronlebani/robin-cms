@@ -11,8 +11,4 @@ module RobinCMS
   def make_stub(str)
     str.gsub(/\s/, '-').gsub(/[^\w-]/, '')
   end
-
-  def extract_stub(filename)
-    File.basename(filename, '.html')
-  end
 end

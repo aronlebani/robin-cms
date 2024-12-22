@@ -1,0 +1,105 @@
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
+
+<form id="item" action="<%= @item.action %>" method="post">
+  <header>
+    <h2>
+      <%= @item.id ? 'Edit' : 'New' %> <%= @collection['name'] %>
+    </h2>
+    <a href="/collections/<%= @collection['name'] %>">Back</a>
+  </header>
+  <% for field in @item.fields %>
+    <label for="<%= field['name']">
+      <%= field['label'] %>
+    </label>
+    <% case field['type'] %>
+    <% when 'input' %>
+      <input
+        id="<%= field['name'] %>"
+        name="<%= field['name'] %>"
+        value="<%= field['default'] %>"
+        required="<%= field['required'] %>"
+      />
+    <% when 'richtext' %>
+      <div id="toolbar">
+        <span class="ql-formats">
+          <button class="ql-bold"></button>
+          <button class="ql-italic"></button>
+          <button class="ql-underline"></button>
+          <button class="ql-strike"></button>
+        </span>
+        <span class="ql-formats">
+          <button class="ql-script" value="sub"></button>
+          <button class="ql-script" value="super"></button>
+        </span>
+        <span class="ql-formats">
+          <button class="ql-header" value="1"></button>
+          <button class="ql-header" value="2"></button>
+          <button class="ql-header" value="3"></button>
+          <button class="ql-blockquote"></button>
+          <button class="ql-code-block"></button>
+        </span>
+        <span class="ql-formats">
+          <button class="ql-list" value="ordered"></button>
+          <button class="ql-list" value="bullet"></button>
+          <button class="ql-indent" value="-1"></button>
+          <button class="ql-indent" value="+1"></button>
+        </span>
+        <span class="ql-formats">
+          <button class="ql-direction" value="rtl"></button>
+          <select class="ql-align"></select>
+        </span>
+        <span class="ql-formats">
+          <button class="ql-link"></button>
+          <button class="ql-image"></button>
+          <button class="ql-video"></button>
+        </span>
+      </div>
+      <div id="editor"><%= @item.content %></div>
+      <input
+        id="<%= field['name'] %>"
+        type="hidden"
+        name="<%= field['name'] %>"
+        value=""
+      />
+    <% else %>
+      <div></div>
+    <% end %>
+  <% end %>
+  <footer>
+    <button type="submit">Submit</button>
+  </footer>
+</form>
+
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+
+<script>
+  const form = document.getElementById("article")
+  const input = document.getElementById("content")
+
+  const quill = new Quill("#editor", {
+    modules: {
+      toolbar: "#toolbar",
+    },
+    theme: "snow",
+  })
+
+  update()
+
+  quill.on(Quill.events.EDITOR_CHANGE, (eventName) => {
+    if (eventName === Quill.events.TEXT_CHANGE) {
+      update()
+    }
+  })
+
+  quill.on(Quill.events.SELECTION_CHANGE, (range) => {
+    if (!range) {
+      update()
+    }
+
+    form.addEventListener("click", update, true)
+  })
+
+  function update() {
+    input.value = quill.getSemanticHTML()
+  }
+</script>

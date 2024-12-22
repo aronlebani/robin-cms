@@ -1,0 +1,12 @@
+content_dir: "content"
+collections:
+  - name: "poem"
+    label: "Poem"
+    location: "/"
+    filetype: "html"
+    fields:
+      - { label: "Title", name: "title", type: "input" }
+      - { label: "Publish Date", name: "created_at", type: "date" }
+      - { label: "Author", name: "author_name", type: "input" }
+      - { label: "School", name: "school", type: "input" }
+      - { label: "Content", name: "content", type: "richtext" }
