@@ -24,8 +24,8 @@
         <ul>
           <% for collection in @collections %>
             <li>
-              <a href="/collections/<%= collection['name'] %>">
-                <%= collection['label'] %>
+              <a href="/collections/<%= collection.id %>">
+                <%= collection.label %>
               </a>
             </li>
           <% end %>

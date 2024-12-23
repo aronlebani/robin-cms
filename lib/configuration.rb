@@ -4,7 +4,13 @@ require 'yaml'
 
 module RobinCMS
 	class Collection
-		ALLOWED_FILETYPES = ['html', 'yaml']
+		ALLOWED_FILETYPES = ['html', 'yaml'].freeze
+		IMPLICIT_FIELDS = [
+			{ 'label' => 'Title', 'name' => 'title', 'type' => 'input' },
+			{ 'label' => 'Collection', 'name' => 'kind', 'type' => 'input', 'hidden' => true },
+			{ 'label' => 'Published date', 'name' => 'created_at', 'type' => 'date', 'hidden' => true },
+			{ 'label' => 'Last edited', 'name' => 'updated_at', 'type' => 'date', 'hidden' => true }
+		].freeze
 
 		attr_reader :id, :label, :location, :filetype, :fields
 
@@ -13,7 +19,10 @@ module RobinCMS
 			@label = config['label'] || ''
 			@location = config['location'] || '/'
 			@filetype = config['filetype'] || 'html'
-			@fields = config['fields']&.map { |f| Field.new(f) } || []
+			@fields = config['fields']
+				.concat(IMPLICIT_FIELDS)
+				.uniq { |f| f['name'] }
+				.map { |f| Field.new(f) }
 
 			unless ALLOWED_FILETYPES.include?(@filetype)
 				raise TypeError "Invalid filetype #{@filetype}"
@@ -22,9 +31,9 @@ module RobinCMS
 	end
 
 	class Field
-		ALLOWED_TYPES = ['input', 'richtext', 'date']
+		ALLOWED_TYPES = ['input', 'richtext', 'date'].freeze
 
-		attr_reader :id, :label, :type, :default, :required, :hidden
+		attr_reader :id, :label, :type, :default, :required, :hidden, :readonly
 
 		def initialize(config)
 			@id = config['name'] || ''
@@ -33,6 +42,7 @@ module RobinCMS
 			@default = config['default'] || ''
 			@required = config['required'] || false
 			@hidden = config['hidden'] || false
+			@readonly = config['readonly'] || false
 
 			unless ALLOWED_TYPES.include?(@type)
 				raise TypeError "Invalid type #{@type}"
@@ -41,7 +51,7 @@ module RobinCMS
 	end
 
 	class Configuration
-		FILENAME = 'robin.yaml'
+		FILENAME = 'robin.yaml'.freeze
 
 		attr_reader :content_dir, :collections
 
@@ -52,6 +62,4 @@ module RobinCMS
 			@collections = config['collections']&.map { |c| Collection.new(c) } || []
 		end
 	end
-
-	$cfg = Configuration.new.freeze
 end

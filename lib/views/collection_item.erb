@@ -2,23 +2,32 @@
 
 <form id="item" action="<%= @item.action %>" method="post">
   <header>
-    <h2>
-      <%= @item.id ? 'Edit' : 'New' %> <%= @collection['name'] %>
-    </h2>
-    <a href="/collections/<%= @collection['name'] %>">Back</a>
+    <h2><%= @item.id ? 'Edit' : 'New' %> <%= @collection.id %></h2>
+    <a href="/collections/<%= @collection.id %>">Back</a>
   </header>
-  <% for field in @item.fields %>
-    <label for="<%= field['name']">
-      <%= field['label'] %>
-    </label>
-    <% case field['type'] %>
-    <% when 'input' %>
+  <% for field in @collection.fields %>
+		<% unless field.hidden %>
+			<label for="<%= field.id %>"><%= field.label %></label>
+		<% end %>
+    <% case field.type
+			 when 'input' %>
       <input
-        id="<%= field['name'] %>"
-        name="<%= field['name'] %>"
-        value="<%= field['default'] %>"
-        required="<%= field['required'] %>"
+        id="<%= field.id %>"
+        name="<%= field.id %>"
+        value="<%= @item.fields[field.id] || field.default %>"
+				<% if field.required %>required<% end %>
+				<% if field.readonly %>readonly<% end %>
+				<% if field.hidden %>type="hidden"<% end %>
       />
+		<% when 'date' %>
+			<input
+        id="<%= field.id %>"
+        name="<%= field.id %>"
+        value="<%= @item.fields[field.id] %>"
+				<% if field.required %>required<% end %>
+				<% if field.readonly %>readonly<% end %>
+				<% if field.hidden %>type="hidden"<% else %>type="date"<% end %>
+			/>
     <% when 'richtext' %>
       <div id="toolbar">
         <span class="ql-formats">
@@ -54,13 +63,8 @@
           <button class="ql-video"></button>
         </span>
       </div>
-      <div id="editor"><%= @item.content %></div>
-      <input
-        id="<%= field['name'] %>"
-        type="hidden"
-        name="<%= field['name'] %>"
-        value=""
-      />
+      <div id="editor"><%= @item.fields['content'] %></div>
+      <input id="<%= field.id %>" type="hidden" name="<%= field.id %>" value="" />
     <% else %>
       <div></div>
     <% end %>
@@ -73,7 +77,9 @@
 <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
 
 <script>
-  const form = document.getElementById("article")
+  const form = document.getElementById("item")
+	// TODO - this shouldn't be hard-coded as 'content' because the richtext
+	// field may not be named 'content'
   const input = document.getElementById("content")
 
   const quill = new Quill("#editor", {

@@ -1,21 +1,42 @@
 # frozen_string_literal: true
 
+require 'bcrypt'
+require 'securerandom'
 require 'sinatra/base'
 
+require_relative 'item'
 require_relative 'version'
-require_relative 'collection'
+require_relative 'configuration'
 
 module RobinCMS
+	DATETIME_FORMAT = '%Y-%m-%d'
+
 	class CMS < Sinatra::Base
-		set :sessions, true
-		set :views, File.join(__dir__, 'views')
+		helpers do
+			def authenticated?(hash, guess)
+				hashed = BCrypt::Password.new(hash)
+				hashed == guess
+			end
+
+			def make_stub(str) = str.gsub(/\s/, '-').gsub(/[^\w-]/, '')
+		end
+
+		configure do
+			set :sessions, true
+			set :logging, true
+			set :session_secret, SecureRandom.hex(64) # TODO - make this configurable
+			set :views, File.join(__dir__, 'views')
+			set :admin_pass, BCrypt::Password.create('admin') # TODO - make this configurable
+
+			$cfg = Configuration.new.freeze
+		end
 
 		get '/login' do
-			erb :login
+			erb :login, layout: false
 		end
 
 		post '/login' do
-			unless authenticated?(ENV['ADMIN_PASS'], params['password'])
+			unless authenticated?(settings.admin_pass, params['password'])
 				@error = 'Incorrect username or password'
 				erb :login
 			end
@@ -30,15 +51,21 @@ module RobinCMS
 		end
 
 		get '/collections' do
+			@collections = $cfg.collections
+
 			erb :collections
 		end
 
 		get '/collections/:c_id' do
+			@collections = $cfg.collections
 			@collection = $cfg.collections.find { |c| c.id == params['c_id'] }
+			@items = Item.all(params['c_id'])
+
 			erb :collection
 		end
 
 		get '/collections/:c_id/item' do
+			@collections = $cfg.collections
 			@collection = $cfg.collections.find { |c| c.id == params['c_id'] }
 
 			if params['id']
@@ -58,7 +85,7 @@ module RobinCMS
 
 				return 404 unless @item
 
-				@item.fields = params
+				@item.fields = params.to_h
 				@item.update
 			else
 				# TODO - figure out how to name file. Title field is not required.
@@ -69,7 +96,7 @@ module RobinCMS
 					erb :error
 				end
 
-				Item.create(id, params['c_id'], fields)
+				Item.create(id, params['c_id'], params)
 			end
 
 			redirect '/collections'
