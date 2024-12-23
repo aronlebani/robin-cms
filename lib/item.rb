@@ -1,117 +1,112 @@
 # frozen_string_literal: true
 
 module RobinCMS
-  class Item
-    attr_accessor :fields
-    attr_reader :id
+	class Item
+		attr_accessor :fields
+		attr_reader :id
 
-    # TODO - populate created_at and updated_at fields
+		def initialize(id, collection_id, fields = {})
+			@id = id
+			@collection_id = collection_id
+			@fields = fields
+		end
 
-    def initialize(id = nil, collection_id = nil, fields = {})
-      @id = id
-      @collection_id = collection_id
-      @fields = fields
-    end
+		def filename
+			raise ArgumentError 'Missing Item Id' unless @id && @collection_id
 
-    def filename
-      raise ArgumentError 'Missing Item Id' unless @id && @collection_id
+			id_to_filename(@id, @collection_id)
+		end
 
-      id_to_filename(@id, @collection_id)
-    end
+		def action
+			if @id
+				"/collections/#{@collection_id}/item?id=#{@id}"
+			else
+				"/collections/#{@collection_id}/item"
+			end
+		end
 
-    def link_to
-      # TODO - broken
-      "#{ENV['APP_HOST']}/#{@id}"
-    end
+		def save
+			return if File.exist?(filename)
 
-    def action
-      if @id
-        "/collections/#{@collection_id}/item?id=#{@id}"
-      else
-        "/collections/#{@collection_id}/item"
-      end
-    end
+			@fields['created_at'] = Time.now
+			File.write(filename, serialize)
+		end
 
-    def save
-      return if File.exist?(filename)
+		def update
+			return unless File.exist?(filename)
 
-      File.write(filename, serialize)
-    end
+			@fields['updated_at'] = Time.now
+			File.write(filename, serialize)
+		end
 
-    def update
-      return unless File.exist?(filename)
+		def delete
+			return unless File.exist?(filename)
 
-      File.write(filename, serialize)
-    end
+			File.delete(filename)
+		end
 
-    def delete
-      return unless File.exist?(filename)
+		class << self
+			def find(id, collection_id)
+				filename = id_to_filename(id, collection_id)
 
-      File.delete(filename)
-    end
+				return unless File.exist?(filename)
 
-    class << self
-      def find(id, collection_id)
-        filename = id_to_filename(id, collection_id)
+				item = deserialize(id, File.read(filename))
 
-        return unless File.exist?(filename)
+				return unless item.collectionId == collection_id
 
-        item = deserialize(id, File.read(filename))
+				item
+			end
 
-        return unless item.collectionId == collection_id
+			def all(collection_id)
+				Dir.glob(File.join(__dir__, $cfg.content_dir, '**/*')).map do |f|
+					next unless File.file?(f)
 
-        item
-      end
+					find(filename_to_id(f, collection_id))
+				end.compact
+			end
 
-      def all(collection_id)
-        Dir.glob(File.join(__dir__, $cfg.content_dir, '**/*')).map do |f|
-          next unless File.file?(f)
+			def create(id, collection_id, fields)
+				item = new(id, collection_id, fields)
+				item.save
+			end
 
-          find(filename_to_id(f, collection_id))
-        end.compact
-      end
+			private
 
-      def create(id, collection_id, fields)
-        item = new(id, collection_id, fields)
-        item.save
-      end
+			def deserialize(id, str)
+				fields = YAML.load(str)
+				content = str.split('---').last
+				collection_id = fields['kind']
+				fields['content'] = content
+				fields.delete('kind')
 
-      private
+				new(id, collection_id, fields)
+			end
+		end
 
-      def deserialize(id, str)
-        fields = YAML.load(str)
-        content = str.split('---').last
-        collection_id = fields['kind']
-        fields['content'] = content
-        fields.delete('kind')
+		private
 
-        new(id, collection_id, fields)
-      end
-    end
+		def serialize
+			content = @fields['content']
+			attrs = @fields
+			attrs.delete('content')
+			attrs['kind'] = @collection_id
 
-    private
+			YAML.dump(attrs) << '---' << content
+		end
+	end
 
-    def serialize
-      content = @fields['content']
-      attrs = @fields
-      attrs.delete('content')
-      attrs['kind'] = @collection_id
+	def id_to_filename(id, collection_id)
+		collection = $cfg.collections.find { |c| c.id == collection_id }
+		filename = "#{id}.#{collection.filetype}"
 
-      YAML.dump(attrs) << '---' << content
-    end
-  end
+		File.join(__dir__, $cfg.content_dir, collection.location, filename)
+	end
 
-  def id_to_filename(id, collection_id)
-    collection = $cfg.collections.find { |c| c.id == collection_id }
-    filename = "#{id}.#{collection.filetype}"
+	def filename_to_id(filename, collection_id)
+		collection = $cfg.collections.find { |c| c.id == collection_id }
+		extension = ".#{collection.filetype}"
 
-    File.join(__dir__, $cfg.content_dir, collection.location, filename)
-  end
-
-  def filename_to_id(filename, collection_id)
-    collection = $cfg.collections.find { |c| c.id == collection_id }
-    extension = ".#{collection.filetype}"
-
-    File.basename(filename, extension)
-  end
+		File.basename(filename, extension)
+	end
 end

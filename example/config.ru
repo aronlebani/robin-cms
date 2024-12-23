@@ -10,7 +10,7 @@ set :session_secret, 'secret'
 use RobinCMS
 
 get '/' do
-  'Hello, world!'
+	'Hello, world!'
 end
 
 run Sinatra::Application

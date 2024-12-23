@@ -3,28 +3,28 @@
 require 'fileutils'
 
 def new(opts)
-  unless opts[:name]
-    puts 'name is required'
-    exit 0
-  end
+	unless opts[:name]
+		puts 'name is required'
+		exit 0
+	end
 
-  Dir.mkdir(opts[:name])
-  FileUtils.cp_r(File.join(__dir__, 'templates', '.'), opts[:name])
+	Dir.mkdir(opts[:name])
+	FileUtils.cp_r(File.join(__dir__, 'templates', '.'), opts[:name])
 end
 
 if __FILE__ == $0
-  opts = {}
+	opts = {}
 
-  OptionParser.new do |p|
-    p.banner = "Usage: #{__FILE__} [OPTIONS]"
-    p.on '-n NAME', '--name=NAME', 'Project name'
-    p.parse! into: opts
-  end
+	OptionParser.new do |p|
+		p.banner = "Usage: #{__FILE__} [OPTIONS]"
+    	p.on '-n NAME', '--name=NAME', 'Project name'
+    	p.parse! into: opts
+	end
 
-  cmd = ARGV.shift
+	cmd = ARGV.shift
 
-  case cmd
-  when 'new'
-    new(opts)
-  end
+	case cmd
+	when 'new'
+		new(opts)
+	end
 end
