@@ -1,2 +1,4 @@
-.env
 content
+Gemfile.lock
+tmp
+public

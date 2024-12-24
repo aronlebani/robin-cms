@@ -113,6 +113,13 @@ module RobinCMS
 			redirect '/collections'
 		end
 
+		post '/publish' do
+			# TODO - make build command configurable
+			res = system('nanoc compile')
+
+			return 500 unless res
+		end
+
 		before /\/collections/ do
 			redirect '/login' unless session['authenticated']
 		end
