@@ -28,7 +28,7 @@ module RobinCMS
 			set :views, File.join(__dir__, 'views')
 			set :admin_pass, BCrypt::Password.create('admin') # TODO - make this configurable
 
-			$cfg = Configuration.new.freeze
+			$cfg = ConfigurationParser.new('robin.yaml').freeze # TODO - make this configurable
 		end
 
 		get '/login' do
@@ -88,7 +88,6 @@ module RobinCMS
 				@item.fields = params.to_h
 				@item.update
 			else
-				# TODO - figure out how to name file. Title field is not required.
 				id = make_stub(params['title'])
 
 				if Item.find(id, params['c_id'])
