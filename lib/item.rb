@@ -1,45 +1,30 @@
 # frozen_string_literal: true
 
 module RobinCMS
-	def id_to_filename(id, collection_id)
-		collection = $cfg.collections.find { |c| c.id == collection_id }
-		filename = "#{id}.#{collection.filetype}"
-
-		File.join($cfg.content_dir, collection.location, filename)
-	end
-
-	def filename_to_id(filename, collection_id)
-		collection = $cfg.collections.find { |c| c.id == collection_id }
-		extension = ".#{collection.filetype}"
-
-		File.basename(filename, extension)
-	end
-
 	class Item
-		include RobinCMS
-
 		attr_accessor :fields
 		attr_reader :id
 
 		def initialize(id, collection_id, fields = {})
 			@id = id
-			@collection_id = collection_id
 			@fields = fields.to_h
+			@collection = $cfg.collections.find { |c| c.id == collection_id }
 
 			@fields['kind'] = collection_id
 		end
 
 		def filename
-			raise ArgumentError 'Missing Item Id' unless @id && @collection_id
+			raise ArgumentError 'Missing Item Id' unless @id && @collection.id
 
-			id_to_filename(@id, @collection_id)
+			filename = "#{@id}.#{@collection.filetype}"
+			File.join($cfg.content_dir, @collection.location, filename)
 		end
 
 		def action
 			if @id
-				"/collections/#{@collection_id}/item?id=#{@id}"
+				"/collections/#{@collection.id}/item?id=#{@id}"
 			else
-				"/collections/#{@collection_id}/item"
+				"/collections/#{@collection.id}/item"
 			end
 		end
 
@@ -67,14 +52,15 @@ module RobinCMS
 		end
 
 		class << self
-			include RobinCMS
-
 			def find(id, collection_id)
-				filename = id_to_filename(id, collection_id)
+				# TODO - I don't think this works for nested directories
+				filename = Dir.glob(File.join($cfg.content_dir, id + '.*')).first
 
-				return unless File.exist?(filename)
+				return unless filename
 
-				item = deserialize(id, File.read(filename))
+				ext = File.extname(filename)
+				content = File.read(filename)
+				item = deserialize(id, ext, content)
 
 				return unless item.fields['kind'] == collection_id
 
@@ -85,8 +71,10 @@ module RobinCMS
 				Dir.glob(File.join($cfg.content_dir, '**/*')).map do |f|
 					next unless File.file?(f)
 
-					id = filename_to_id(f, collection_id)
-					item = deserialize(id, File.read(f))
+					id = File.basename(f, '.*')
+					ext = File.extname(f)
+					content = File.read(f)
+					item = deserialize(id, ext, content)
 
 					next unless item.fields['kind'] == collection_id
 
@@ -94,35 +82,56 @@ module RobinCMS
 				end.compact
 			end
 
-			def create(id, collection_id, fields)
+			def create(collection_id, fields)
+				id = make_stub(fields['title'])
+
+				if find(id, collection_id)
+					raise IOError 'An item with the same name already exists'
+				end
+
 				item = new(id, collection_id, fields)
 				item.save
 			end
 
 			private
 
-			def deserialize(id, str)
-				_, frontmatter, content = str.split('---')
+			def deserialize(id, ext, str)
+				case ext
+				when 'html'
+					_, frontmatter, content = str.split('---')
 
-				fields = YAML.load(frontmatter)
-				collection_id = fields['kind']
-				fields['content'] = content
+					fields = YAML.load(frontmatter)
+					collection_id = fields['kind']
+					fields['content'] = content
 
-				new(id, collection_id, fields)
+					new(id, collection_id, fields)
+				when 'yaml'
+					fields = YAML.load(str)
+					collection_id = fields['kind']
+
+					new(id, collection_id, fields)
+				end
 			end
+
+			def make_stub(str) = str.gsub(/\s/, '-').gsub(/[^\w-]/, '')
 		end
 
 		private
 
 		def serialize
-			content = @fields['content']
-
 			frontmatter = @fields
-			frontmatter.delete('content')
 			frontmatter.delete('id')
 			frontmatter.delete('c_id')
 
-			YAML.dump(frontmatter.to_h) << "---\n" << content
+			case @collection.filetype
+			when 'html'
+				content = @fields['content']
+				frontmatter.delete('content')
+
+				YAML.dump(frontmatter.to_h) << "---\n" << content
+			when 'yaml'
+				YAML.dump(frontmatter.to_h)
+			end
 		end
 	end
 end

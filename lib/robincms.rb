@@ -17,8 +17,6 @@ module RobinCMS
 				hashed = BCrypt::Password.new(hash)
 				hashed == guess
 			end
-
-			def make_stub(str) = str.gsub(/\s/, '-').gsub(/[^\w-]/, '')
 		end
 
 		configure do
@@ -27,6 +25,8 @@ module RobinCMS
 			set :session_secret, SecureRandom.hex(64) # TODO - make this configurable
 			set :views, File.join(__dir__, 'views')
 			set :admin_pass, BCrypt::Password.create('admin') # TODO - make this configurable
+			# TODO - configurable base route
+			# TODO - handle duplicate filenames
 
 			$cfg = ConfigurationParser.new('robin.yaml').freeze # TODO - make this configurable
 		end
@@ -88,14 +88,12 @@ module RobinCMS
 				@item.fields = params.to_h
 				@item.update
 			else
-				id = make_stub(params['title'])
-
-				if Item.find(id, params['c_id'])
+				begin
+					Item.create(params['c_id'], params)
+				rescue IOError
 					@error = 'An item with the same name already exists'
 					erb :error
 				end
-
-				Item.create(id, params['c_id'], params)
 			end
 
 			redirect '/collections'
