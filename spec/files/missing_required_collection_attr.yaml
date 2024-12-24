@@ -1,0 +1,7 @@
+content_dir: "content"
+collections:
+  - name: "poem"
+    location: "/"
+    filetype: "html"
+    fields:
+      - { label: "Title", name: "title", type: "input" }

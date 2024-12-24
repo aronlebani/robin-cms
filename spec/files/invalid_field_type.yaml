@@ -1,0 +1,8 @@
+content_dir: "content"
+collections:
+  - name: "poem"
+    label: "Poem"
+    location: "/"
+    filetype: "html"
+    fields:
+      - { label: "Author", name: "author_name", type: "barney" }
