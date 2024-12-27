@@ -1,4 +1,4 @@
-content_dir: "tmp"
+content_dir: "spec/tmp"
 collections:
   - name: "poem"
     label: "Poem"

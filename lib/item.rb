@@ -2,6 +2,8 @@
 
 module RobinCMS
 	class Item
+		DATETIME_FORMAT = '%Y-%m-%d'
+
 		attr_accessor :fields
 		attr_reader :id, :collection
 
@@ -71,7 +73,7 @@ module RobinCMS
 				id = make_stub(fields['title'])
 
 				if find(id, collection_id)
-					raise IOError 'An item with the same name already exists'
+					raise IOError, 'An item with the same name already exists'
 				end
 
 				item = new(id, collection_id, fields)
@@ -82,15 +84,15 @@ module RobinCMS
 
 			def deserialize(id, ext, str)
 				case ext
-				when 'html'
+				when '.html'
 					_, frontmatter, content = str.split('---')
 
 					fields = YAML.load(frontmatter)
 					collection_id = fields['kind']
-					fields['content'] = content
+					fields['content'] = content.strip
 
 					new(id, collection_id, fields)
-				when 'yaml'
+				when '.yaml'
 					fields = YAML.load(str)
 					collection_id = fields['kind']
 
@@ -98,7 +100,7 @@ module RobinCMS
 				end
 			end
 
-			def make_stub(str) = str.gsub(/\s/, '-').gsub(/[^\w-]/, '')
+			def make_stub(str) = str.gsub(/\s/, '-').gsub(/[^\w-]/, '').downcase
 		end
 
 		private

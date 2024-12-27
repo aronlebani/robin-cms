@@ -1,4 +1,5 @@
 require 'rspec'
+require 'fileutils'
 
 require_relative '../lib/item'
 
@@ -9,8 +10,12 @@ describe Item do
 		$cfg = ConfigurationParser.new(File.join(__dir__, 'files/item_spec.yaml'))
 	end
 
+	before(:example) do
+		FileUtils.mkdir_p(File.join(__dir__, 'tmp', 'artists'))
+	end
+
 	after(:example) do
-		# TODO - Delete all files in tmp
+		FileUtils.rm_rf(File.join(__dir__, 'tmp'))
 	end
 
 	it 'writes the correct filetype' do
@@ -19,7 +24,7 @@ describe Item do
 			'artist_name' => 'Surprise Chef'
 		})
 
-		expect(File.exist?('all-news-is-good-news.yaml')).to be(true)
+		expect(File.exist?(File.join(__dir__, 'tmp', 'all-news-is-good-news.yaml'))).to be(true)
 	end
 
 	it 'writes to the correct location' do
@@ -28,34 +33,33 @@ describe Item do
 			'from' => 'Melbourne, Australia'
 		})
 
-		expect(File.exist?(File.join('artists', 'surprise-chef.yaml'))).to be(true)
+		expect(File.exist?(File.join(__dir__, 'tmp', 'artists', 'surprise-chef.yaml'))).to be(true)
 	end
 
 	it 'creates a new item with the correct filename' do
 		Item.create('poem', {
 			'title' => 'A poem about Ruby',
 			'author_name' => 'Aron',
-			'content' => 'This is a poem about <i>Ruby</i>.'
+			'content' => '<p>This is a poem about <i>Ruby</i>.</p>'
 		})
 
-		expect(File.exist?('a-poem-about-ruby.html')).to be(true)
+		expect(File.exist?(File.join(__dir__, 'tmp', 'a-poem-about-ruby.html'))).to be(true)
 	end
 
-	# TODO - yaml version
 	it 'creates a new html item with the correct fields' do
 		Item.create('poem', {
 			'title' => 'A poem about Ruby',
 			'author_name' => 'Aron',
-			'content' => 'This is a poem about <i>Ruby</i>.'
+			'content' => '<p>This is a poem about <i>Ruby</i>.</p>'
 		})
 
-		expect(File.readlines('a-poem-about-ruby.html').to contain_exactly(
-			a_string_matching('---'),
-			a_string_matching('---'),
-			a_string_matching('<p>This is a poem about <i>Ruby</i>.</p>'),
-			a_string_matching('title: A poem about Ruby'),
-			a_string_matching('author_name: Aron'),
-			a_string_matching('kind: poem'),
+		expect(File.readlines(File.join(__dir__, 'tmp', 'a-poem-about-ruby.html'), chomp: true)).to contain_exactly(
+			'---',
+			'---',
+			'<p>This is a poem about <i>Ruby</i>.</p>',
+			'title: A poem about Ruby',
+			'author_name: Aron',
+			'kind: poem',
 			a_string_matching(/created_at: .*/),
 			a_string_matching(/updated_at: .*/)
 		).and start_with('---')
@@ -68,10 +72,11 @@ describe Item do
 			'artist_name' => 'Surprise Chef'
 		})
 
-		expect(File.readlines('all-news-is-good-news.yaml').to contain_exactly(
-			a_string_matching('title: All News Is Good News'),
-			a_string_matching('artist_name: Surprise Chef'),
-			a_string_matching('kind: song'),
+		expect(File.readlines(File.join(__dir__, 'tmp', 'all-news-is-good-news.yaml'), chomp: true)).to contain_exactly(
+			'---',
+			'title: All News Is Good News',
+			'artist_name: Surprise Chef',
+			'kind: song',
 			a_string_matching(/created_at: .*/),
 			a_string_matching(/updated_at: .*/)
 		)
@@ -81,14 +86,29 @@ describe Item do
 		Item.create('poem', {
 			'title' => 'A poem about Ruby',
 			'author_name' => 'Aron',
-			'content' => 'This is a poem about <i>Ruby</i>.'
+			'content' => '<p>This is a poem about <i>Ruby</i>.</p>'
 		})
 		timestamp = Time.now.strftime('%Y-%m-%d')
 
-		expect(File.readlines('a-poem-about-ruby.html').to include(
-			a_string_matching("updated_at: #{timestamp}")
-			a_string_matching("created_at: #{timestamp}")
+		expect(File.readlines(File.join(__dir__, 'tmp', 'a-poem-about-ruby.html'), chomp: true)).to include(
+			"updated_at: '#{timestamp}'",
+			"created_at: '#{timestamp}'"
 		)
+	end
+
+	it 'complains if a file with the same name already exists' do
+		Item.create('poem', {
+			'title' => 'A poem about Ruby',
+			'author_name' => 'Aron',
+			'content' => '<p>This is a poem about <i>Ruby</i>.</p>'
+		})
+		expect do
+			Item.create('poem', {
+				'title' => 'A poem about Ruby',
+				'author_name' => 'Aron',
+				'content' => '<p>This is another a poem about <i>Ruby</i>.</p>'
+			})
+		end.to raise_error(IOError)
 	end
 
 	it 'finds the item' do
@@ -122,7 +142,7 @@ describe Item do
 
 		expect(item.id).to eq('a-poem-about-ruby')
 		expect(item.collection.id).to eq('poem')
-		expect(item.fields).to match(
+		expect(item.fields).to include(
 			'title' => 'A poem about Ruby',
 			'author_name' => 'Aron',
 			'created_at' => '2024-12-23',
@@ -144,7 +164,7 @@ describe Item do
 
 		expect(item.id).to eq('all-news-is-good-news')
 		expect(item.collection.id).to eq('song')
-		expect(item.fields).to match(
+		expect(item.fields).to include(
 			'title' => 'All News Is Good News',
 			'artist_name' => 'Surprise Chef',
 			'created_at' => '2024-12-23',
@@ -249,12 +269,12 @@ describe Item do
 			<p>This is a poem about <i>Ruby</i>.</p>
 		HTML
 		item = Item.find('a-poem-about-ruby', 'poem')
-		item.fields['title'] = 'A poem about Haskell',
-		item.fields['content'] = 'This is a poem about <i>Haskell</i>.'
+		item.fields['title'] = 'A poem about Haskell'
+		item.fields['content'] = '<p>This is a poem about <i>Haskell</i>.</p>'
 		item.update
 
-		expect(File.readlines('a-poem-about-ruby.html').to include(
-			a_string_matching('title: A poem about Haskell'),
+		expect(File.readlines(File.join(__dir__, 'tmp', 'a-poem-about-ruby.html'), chomp: true)).to include(
+			'title: A poem about Haskell'
 		).and end_with('<p>This is a poem about <i>Haskell</i>.</p>')
 	end
 
@@ -269,13 +289,14 @@ describe Item do
 			---
 			<p>This is a poem about <i>Ruby</i>.</p>
 		HTML
+		item = Item.find('a-poem-about-ruby', 'poem')
 		item.fields['title'] = 'Is this working?'
 		item.update
 		timestamp = Time.now.strftime('%Y-%m-%d')
 
-		expect(File.readlines('update-test.html').to include(
-			a_string_matching("updated_at: #{timestamp}")
-			a_string_matching('created_at: 2024-12-23')
+		expect(File.readlines(File.join(__dir__, 'tmp', 'a-poem-about-ruby.html'), chomp: true)).to include(
+			"updated_at: '#{timestamp}'",
+			"created_at: '2024-12-23'"
 		)
 	end
 
@@ -291,10 +312,10 @@ describe Item do
 			<p>This is a poem about <i>Ruby</i>.</p>
 		HTML
 		item = Item.find('a-poem-about-ruby', 'poem')
-		item.fields.title = 'A poem about OCaml'
+		item.fields['title'] = 'A poem about OCaml'
 		item.update
 
-		expect(File.exist?('a-poem-about-ruby.html')).to be(true)
+		expect(File.exist?(File.join(__dir__, 'tmp', 'a-poem-about-ruby.html'))).to be(true)
 	end
 
 	it 'deletes item' do
@@ -311,6 +332,6 @@ describe Item do
 		item = Item.find('a-poem-about-ruby', 'poem')
 		item.delete
 
-		expect(File.exist?('a-poem-about-ruby.html')).to be(false)
+		expect(File.exist?(File.join(__dir__, 'tmp', 'a-poem-about-ruby.html'))).to be(false)
 	end
 end

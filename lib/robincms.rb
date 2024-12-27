@@ -9,8 +9,6 @@ require_relative 'version'
 require_relative 'configuration'
 
 module RobinCMS
-	DATETIME_FORMAT = '%Y-%m-%d'
-
 	class CMS < Sinatra::Base
 		helpers do
 			def authenticated?(hash, guess)
