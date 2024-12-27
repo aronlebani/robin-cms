@@ -257,6 +257,9 @@ describe Item do
 		expect(items.length).to eq(0)
 	end
 
+	it 'finds items in nested directories' do
+	end
+
 	it 'correctly updates fields when editing' do
 		File.write(File.join(__dir__, 'tmp', 'a-poem-about-ruby.html'), <<~HTML)
 			---

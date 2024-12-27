@@ -3,7 +3,7 @@
 <form
 	id="item"
 	<% if @item.id %>
-		action='<%= "/collections/#{@collection.id}/item?id=#{@item.id} %>'
+		action='<%= "/collections/#{@collection.id}/item?id=#{@item.id}" %>'
 	<% else %>
 		action='<%= "/collections/#{@collection.id}/item" %>'
 	<% end %>

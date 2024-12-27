@@ -1,0 +1,7 @@
+content_dir: "content"
+collections:
+  - name: "poem"
+    label: "Poem"
+    location: "/"
+    fields:
+      - { label: "Author", name: "author_name", type: "input" }

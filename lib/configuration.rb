@@ -12,7 +12,7 @@ module RobinCMS
 	class CollectionParser
 		include RobinCMS
 
-		ALLOWED_FILETYPES = ['html', 'yaml'].freeze
+		ALLOWED_FILETYPES = ['html', 'yaml', nil].freeze
 		REQUIRED_ATTRS = ['name', 'label'].freeze
 		IMPLICIT_FIELDS = [
 			{ 'label' => 'Title', 'name' => 'title', 'type' => 'input' },

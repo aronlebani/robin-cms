@@ -4,9 +4,6 @@ require_relative '../lib/configuration'
 
 include RobinCMS
 
-# TODO - sets default location
-# TODO - sets default filetype
-
 describe ConfigurationParser do
 	it 'correctly parses a valid configuration file' do
 		cfg = ConfigurationParser.new(File.join(__dir__, 'files/valid.yaml'))
@@ -36,6 +33,18 @@ describe ConfigurationParser do
 
 		expect(cfg.collections[0].fields.filter { |f| f.id == 'title' }.length).to eq(1)
 		expect(cfg.collections[0].fields.find { |f| f.id == 'title' }.label).to eq('My title')
+	end
+
+	it 'uses the default location if not explicitly set' do
+		cfg = ConfigurationParser.new(File.join(__dir__, 'files/no_location.yaml'))
+
+		expect(cfg.collections[0].location).to eq('/')
+	end
+
+	it 'uses the default filetype if not explicitly set' do
+		cfg = ConfigurationParser.new(File.join(__dir__, 'files/no_filetype.yaml'))
+
+		expect(cfg.collections[0].filetype).to eq('html')
 	end
 
 	it 'complains if no collections are given' do
