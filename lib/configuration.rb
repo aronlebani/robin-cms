@@ -3,7 +3,15 @@
 require 'yaml'
 
 module RobinCMS
+	class ParseError < StandardError
+		def initialize(msg = 'Error parsing configuration')
+			super(msg)
+		end
+	end
+
 	class CollectionParser
+		include RobinCMS
+
 		ALLOWED_FILETYPES = ['html', 'yaml'].freeze
 		REQUIRED_ATTRS = ['name', 'label'].freeze
 		IMPLICIT_FIELDS = [
@@ -17,11 +25,11 @@ module RobinCMS
 
 		def initialize(config)
 			unless ALLOWED_FILETYPES.include?(config['filetype'])
-				raise TypeError "Invalid filetype #{config['filetype']}"
+				raise ParseError, "Invalid filetype #{config['filetype']}"
 			end
 
 			unless REQUIRED_ATTRS.all? { |attr| config.keys.include?(attr) }
-				raise TypeError "Missing one or more required attributes #{REQUIRED_ATTRS.join(', ')} for collection #{config['name']}"
+				raise ParseError, "Missing one or more required attributes #{REQUIRED_ATTRS.join(', ')} for collection #{config['name']}"
 			end
 
 			@id = config['name']
@@ -36,6 +44,8 @@ module RobinCMS
 	end
 
 	class FieldParser
+		include RobinCMS
+
 		ALLOWED_TYPES = ['input', 'richtext', 'date'].freeze
 		REQUIRED_ATTRS = ['name', 'label', 'type'].freeze
 
@@ -43,11 +53,11 @@ module RobinCMS
 
 		def initialize(config)
 			unless ALLOWED_TYPES.include?(config['type'])
-				raise TypeError "Invalid type #{config['type']}"
+				raise ParseError, "Invalid type #{config['type']}"
 			end
 
 			unless REQUIRED_ATTRS.all? { |attr| config.keys.include?(attr) }
-				raise TypeError "Missing one or more required attributes #{REQUIRED_ATTRS.join(', ')} for field #{config['name']}"
+				raise ParseError, "Missing one or more required attributes #{REQUIRED_ATTRS.join(', ')} for field #{config['name']}"
 			end
 
 			@id = config['name'] || ''
@@ -61,13 +71,15 @@ module RobinCMS
 	end
 
 	class ConfigurationParser
+		include RobinCMS
+
 		attr_reader :content_dir, :collections
 
 		def initialize(filename)
 			config = YAML.load_file(filename)
 
 			if !config['collections'] || config['collections'].length == 0
-				raise TypeError "At least one collection is required"
+				raise ParseError, "At least one collection is required"
 			end
 
 			@content_dir = config['content_dir'] || 'content'

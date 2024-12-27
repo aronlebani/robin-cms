@@ -3,7 +3,7 @@
 module RobinCMS
 	class Item
 		attr_accessor :fields
-		attr_reader :id
+		attr_reader :id, :collection
 
 		def initialize(id, collection_id, fields = {})
 			@id = id
@@ -11,21 +11,6 @@ module RobinCMS
 			@collection = $cfg.collections.find { |c| c.id == collection_id }
 
 			@fields['kind'] = collection_id
-		end
-
-		def filename
-			raise ArgumentError 'Missing Item Id' unless @id && @collection.id
-
-			filename = "#{@id}.#{@collection.filetype}"
-			File.join($cfg.content_dir, @collection.location, filename)
-		end
-
-		def action
-			if @id
-				"/collections/#{@collection.id}/item?id=#{@id}"
-			else
-				"/collections/#{@collection.id}/item"
-			end
 		end
 
 		def save
@@ -117,6 +102,13 @@ module RobinCMS
 		end
 
 		private
+
+		def filename
+			raise ArgumentError, 'Missing Item Id' unless @id && @collection.id
+
+			filename = "#{@id}.#{@collection.filetype}"
+			File.join($cfg.content_dir, @collection.location, filename)
+		end
 
 		def serialize
 			frontmatter = @fields

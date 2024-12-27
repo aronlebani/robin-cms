@@ -1,6 +1,14 @@
 <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
 
-<form id="item" action="<%= @item.action %>" method="post">
+<form
+	id="item"
+	<% if @item.id %>
+		action='<%= "/collections/#{@collection.id}/item?id=#{@item.id} %>'
+	<% else %>
+		action='<%= "/collections/#{@collection.id}/item" %>'
+	<% end %>
+	method="post"
+>
   <header>
     <h2><%= @item.id ? 'Edit' : 'New' %> <%= @collection.id %></h2>
     <a href="/collections/<%= @collection.id %>">Back</a>
