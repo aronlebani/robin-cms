@@ -73,7 +73,8 @@ module RobinCMS
 	class ConfigurationParser
 		include RobinCMS
 
-		attr_reader :content_dir, :collections
+		attr_reader :content_dir, :admin_username, :admin_password,
+			:build_command, :base_route, :collections
 
 		def initialize(filename)
 			config = YAML.load_file(filename)
@@ -83,6 +84,10 @@ module RobinCMS
 			end
 
 			@content_dir = config['content_dir'] || 'content'
+			@admin_username = config['admin_username'] || 'admin'
+			@admin_password = config['admin_password'] || 'admin'
+			@build_command = config['build_command'] || 'nanoc compile'
+			@base_route = config['base_route'] || 'cms'
 			@collections = config['collections'].map { |c| CollectionParser.new(c) }
 		end
 	end

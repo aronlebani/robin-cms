@@ -24,7 +24,7 @@
         <ul>
           <% for collection in @collections %>
             <li>
-              <a href="/collections/<%= collection.id %>">
+							<a href="/<%= settings.base_route %>/collections/<%= collection.id %>">
                 <%= collection.label %>
               </a>
             </li>

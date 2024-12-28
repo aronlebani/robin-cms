@@ -1,4 +1,8 @@
 content_dir: "content"
+admin_username: "admin"
+admin_password: "admin"
+build_command: "nanoc compile"
+base_route: "cms"
 collections:
   - name: "poem"
     label: "Poem"

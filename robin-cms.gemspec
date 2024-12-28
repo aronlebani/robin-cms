@@ -30,11 +30,12 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   gem "bcrypt"
-  gem "puma"
   gem "rackup"
   gem "sinatra"
+  gem "sinatra-contrib"
 
   group :development do
+	gem "puma"
 	gem "rspec"
   end
 

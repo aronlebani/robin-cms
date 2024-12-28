@@ -2,10 +2,10 @@
 <ul>
   <% for item in @items %>
     <li>
-      <a href="/collections/<%= @collection.id %>/item?id=<%= item.id %>">
+      <a href="/<%= settings.base_route %>/collections/<%= @collection.id %>/item?id=<%= item.id %>">
         <%= item.fields['title'] %>
       </a>
     </li>
   <% end %>
-  <a href="/collections/<%= @collection.id %>/item">New article</a>
+	<a href="/<%= settings.base_route %>/collections/<%= @collection.id %>/item">New article</a>
 </ul>

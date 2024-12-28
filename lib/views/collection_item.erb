@@ -3,15 +3,15 @@
 <form
 	id="item"
 	<% if @item.id %>
-		action='<%= "/collections/#{@collection.id}/item?id=#{@item.id}" %>'
+		action="/<%= settings.base_route %>/collections/<%= @collection.id %>/item?id=<%= @item.id %>"
 	<% else %>
-		action='<%= "/collections/#{@collection.id}/item" %>'
+		action="/<%= settings.base_route %>/collections/<%= @collection.id %>/item"
 	<% end %>
 	method="post"
 >
   <header>
     <h2><%= @item.id ? 'Edit' : 'New' %> <%= @collection.id %></h2>
-    <a href="/collections/<%= @collection.id %>">Back</a>
+		<a href="/<%= settings.base_route %>/collections/<%= @collection.id %>">Back</a>
   </header>
   <% for field in @collection.fields %>
 		<% unless field.hidden %>
