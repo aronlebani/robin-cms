@@ -40,8 +40,7 @@ module RobinCMS
 
 		class << self
 			def find(id, collection_id)
-				# TODO - I don't think this works for nested directories
-				filename = Dir.glob(File.join($cfg.content_dir, id + '.*')).first
+				filename = Dir.glob(File.join($cfg.content_dir, '**', id + '.*')).first
 
 				return unless filename
 

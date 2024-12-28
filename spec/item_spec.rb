@@ -257,7 +257,34 @@ describe Item do
 		expect(items.length).to eq(0)
 	end
 
-	it 'finds items in nested directories' do
+	it 'finds nested items' do
+		File.write(File.join(__dir__, 'tmp', 'artists', 'surprise-chef.yaml'), <<~HTML)
+			---
+			title: Surprise Chef
+			from: Melbourne, Australia
+			created_at: '2024-12-23'
+			updated_at: '2024-12-23'
+			kind: artist
+		HTML
+		item = Item.find('surprise-chef', 'artist')
+
+		expect(item).not_to be(nil)
+	end
+
+	it 'finds items that have been moved to a different directory' do
+		File.write(File.join(__dir__, 'tmp', 'artists', 'a-poem-about-ruby.html'), <<~HTML)
+			---
+			title: A poem about Ruby
+			author_name: Aron
+			created_at: '2024-12-23'
+			updated_at: '2024-12-23'
+			kind: poem
+			---
+			<p>This is a poem about <i>Ruby</i>.</p>
+		HTML
+		item = Item.find('a-poem-about-ruby', 'poem')
+
+		expect(item).not_to be(nil)
 	end
 
 	it 'correctly updates fields when editing' do
