@@ -124,7 +124,7 @@ module RobinCMS
 				return 500 unless res
 			end
 
-			before /\/collections/ do
+			before /\/collections.*/ do
 				unless session['authenticated']
 					redirect "/#{settings.base_route}/login"
 				end

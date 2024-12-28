@@ -13,3 +13,25 @@ collections:
       - { label: "Author", name: "author_name", type: "input" }
       - { label: "School", name: "school", type: "input" }
       - { label: "Content", name: "content", type: "richtext" }
+  - name: "article"
+    label: "Article"
+    location: "/"
+    filetype: "html"
+    fields:
+      - { label: "Title", name: "title", type: "input" }
+      - { label: "Author", name: "author_name", type: "input" }
+      - { label: "Content", name: "content", type: "richtext" }
+  - name: "song"
+    label: "Song"
+    location: "/"
+    filetype: "yaml"
+    fields:
+      - { label: "Title", name: "title", type: "input" }
+      - { label: "Artist", name: "artist_name", type: "input" }
+  - name: "artist"
+    label: "Artist"
+    location: "/artists"
+    filetype: "yaml"
+    fields:
+      - { label: "Title", name: "title", type: "input" }
+      - { label: "From", name: "from", type: "input" }

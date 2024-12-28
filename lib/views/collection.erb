@@ -7,5 +7,7 @@
       </a>
     </li>
   <% end %>
-	<a href="/<%= settings.base_route %>/collections/<%= @collection.id %>/item">New article</a>
+	<a href="/<%= settings.base_route %>/collections/<%= @collection.id %>/item">
+		New <%= @collection.id %>
+	</a>
 </ul>
