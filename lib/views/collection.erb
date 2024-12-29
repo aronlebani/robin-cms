@@ -1,12 +1,12 @@
 <h2><%= @collection.label %></h2>
 <ul>
-  <% for item in @items %>
-    <li>
-      <a href="/<%= settings.base_route %>/collections/<%= @collection.id %>/item?id=<%= item.id %>">
-        <%= item.fields['title'] %>
-      </a>
-    </li>
-  <% end %>
+	<% for item in @items %>
+		<li>
+			<a href="/<%= settings.base_route %>/collections/<%= @collection.id %>/item?id=<%= item.id %>">
+				<%= item.fields['title'] %>
+			</a>
+		</li>
+	<% end %>
 	<a href="/<%= settings.base_route %>/collections/<%= @collection.id %>/item">
 		New <%= @collection.id %>
 	</a>

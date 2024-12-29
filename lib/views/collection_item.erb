@@ -9,111 +9,111 @@
 	<% end %>
 	method="post"
 >
-  <header>
-    <h2><%= @item.id ? 'Edit' : 'New' %> <%= @collection.id %></h2>
+	<header>
+		<h2><%= @item.id ? 'Edit' : 'New' %> <%= @collection.id %></h2>
 		<a href="/<%= settings.base_route %>/collections/<%= @collection.id %>">Back</a>
-  </header>
-  <% for field in @collection.fields %>
+	</header>
+	<% for field in @collection.fields %>
 		<% unless field.hidden %>
 			<label for="<%= field.id %>"><%= field.label %></label>
 		<% end %>
-    <% case field.type
+		<% case field.type
 			 when 'input' %>
-      <input
-        id="<%= field.id %>"
-        name="<%= field.id %>"
-        value="<%= @item.fields[field.id] || field.default %>"
+			<input
+				id="<%= field.id %>"
+				name="<%= field.id %>"
+				value="<%= @item.fields[field.id] || field.default %>"
 				<% if field.required %>required<% end %>
 				<% if field.readonly %>readonly<% end %>
 				<% if field.hidden %>type="hidden"<% end %>
-      />
+			/>
 		<% when 'date' %>
 			<input
-        id="<%= field.id %>"
-        name="<%= field.id %>"
-        value="<%= @item.fields[field.id] %>"
+				id="<%= field.id %>"
+				name="<%= field.id %>"
+				value="<%= @item.fields[field.id] %>"
 				<% if field.required %>required<% end %>
 				<% if field.readonly %>readonly<% end %>
 				<% if field.hidden %>type="hidden"<% else %>type="date"<% end %>
 			/>
-    <% when 'richtext' %>
-      <div id="toolbar">
-        <span class="ql-formats">
-          <button class="ql-bold"></button>
-          <button class="ql-italic"></button>
-          <button class="ql-underline"></button>
-          <button class="ql-strike"></button>
-        </span>
-        <span class="ql-formats">
-          <button class="ql-script" value="sub"></button>
-          <button class="ql-script" value="super"></button>
-        </span>
-        <span class="ql-formats">
-          <button class="ql-header" value="1"></button>
-          <button class="ql-header" value="2"></button>
-          <button class="ql-header" value="3"></button>
-          <button class="ql-blockquote"></button>
-          <button class="ql-code-block"></button>
-        </span>
-        <span class="ql-formats">
-          <button class="ql-list" value="ordered"></button>
-          <button class="ql-list" value="bullet"></button>
-          <button class="ql-indent" value="-1"></button>
-          <button class="ql-indent" value="+1"></button>
-        </span>
-        <span class="ql-formats">
-          <button class="ql-direction" value="rtl"></button>
-          <select class="ql-align"></select>
-        </span>
-        <span class="ql-formats">
-          <button class="ql-link"></button>
-          <button class="ql-image"></button>
-          <button class="ql-video"></button>
-        </span>
-      </div>
-      <div id="editor"><%= @item.fields['content'] %></div>
-      <input id="<%= field.id %>" type="hidden" name="<%= field.id %>" value="" />
-    <% else %>
-      <div></div>
-    <% end %>
-  <% end %>
-  <footer>
-    <button type="submit">Submit</button>
-  </footer>
+		<% when 'richtext' %>
+			<div id="toolbar">
+				<span class="ql-formats">
+					<button class="ql-bold"></button>
+					<button class="ql-italic"></button>
+					<button class="ql-underline"></button>
+					<button class="ql-strike"></button>
+				</span>
+				<span class="ql-formats">
+					<button class="ql-script" value="sub"></button>
+					<button class="ql-script" value="super"></button>
+				</span>
+				<span class="ql-formats">
+					<button class="ql-header" value="1"></button>
+					<button class="ql-header" value="2"></button>
+					<button class="ql-header" value="3"></button>
+					<button class="ql-blockquote"></button>
+					<button class="ql-code-block"></button>
+				</span>
+				<span class="ql-formats">
+					<button class="ql-list" value="ordered"></button>
+					<button class="ql-list" value="bullet"></button>
+					<button class="ql-indent" value="-1"></button>
+					<button class="ql-indent" value="+1"></button>
+				</span>
+				<span class="ql-formats">
+					<button class="ql-direction" value="rtl"></button>
+					<select class="ql-align"></select>
+				</span>
+				<span class="ql-formats">
+					<button class="ql-link"></button>
+					<button class="ql-image"></button>
+					<button class="ql-video"></button>
+				</span>
+			</div>
+			<div id="editor"><%= @item.fields['content'] %></div>
+			<input id="<%= field.id %>" type="hidden" name="<%= field.id %>" value="" />
+		<% else %>
+			<div></div>
+		<% end %>
+	<% end %>
+	<footer>
+		<button type="submit">Submit</button>
+	</footer>
 </form>
 
 <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
 
 <script>
-  const form = document.getElementById("item")
+	const form = document.getElementById("item")
 	// TODO - this shouldn't be hard-coded as 'content' because the richtext
 	// field may not be named 'content'
-  const input = document.getElementById("content")
+	const input = document.getElementById("content")
 
-  const quill = new Quill("#editor", {
-    modules: {
-      toolbar: "#toolbar",
-    },
-    theme: "snow",
-  })
+	const quill = new Quill("#editor", {
+		modules: {
+			toolbar: "#toolbar",
+		},
+		theme: "snow",
+	})
 
-  update()
+	update()
 
-  quill.on(Quill.events.EDITOR_CHANGE, (eventName) => {
-    if (eventName === Quill.events.TEXT_CHANGE) {
-      update()
-    }
-  })
+	quill.on(Quill.events.EDITOR_CHANGE, (eventName) => {
+		if (eventName === Quill.events.TEXT_CHANGE) {
+			update()
+		}
+	})
 
-  quill.on(Quill.events.SELECTION_CHANGE, (range) => {
-    if (!range) {
-      update()
-    }
+	quill.on(Quill.events.SELECTION_CHANGE, (range) => {
+		if (!range) {
+			update()
+		}
 
-    form.addEventListener("click", update, true)
-  })
+		form.addEventListener("click", update, true)
+	})
 
-  function update() {
-    input.value = quill.getSemanticHTML()
-  }
+	function update() {
+		input.value = quill.getSemanticHTML()
+	}
 </script>

@@ -1,43 +1,43 @@
 <!doctype html>
 
 <html lang="en">
-  <head>
-  	<meta charset="utf-8" />
-  	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  	<link rel="stylesheet" href="/assets/stylesheet.css">
-  	<script type="text/javascript" src="/assets/script.js"></script>
-  	<title>Robin CMS</title>
-  	<meta property="og:title" content="" />
-  	<meta property="og:url" content="" />
-  	<meta property="og:type" content="website" />
-  	<meta property="og:description" content="" />
-    <style>
-      #editor {
-        height: 16rem;
-      }
-    </style>
-  </head>
-  <body>
-    <header>
-      <h1>Admin</h1>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<link rel="stylesheet" href="/assets/stylesheet.css">
+		<script type="text/javascript" src="/assets/script.js"></script>
+		<title>Robin CMS</title>
+		<meta property="og:title" content="" />
+		<meta property="og:url" content="" />
+		<meta property="og:type" content="website" />
+		<meta property="og:description" content="" />
+		<style>
+			#editor {
+				height: 16rem;
+			}
+		</style>
+	</head>
+	<body>
+		<header>
+			<h1>Admin</h1>
 			<a href="/<%= settings.base_route %>/logout">Log out</a>
 			<h2>Collections</h2>
-      <nav>
-        <ul>
-          <% for collection in @collections %>
-            <li>
+			<nav>
+				<ul>
+					<% for collection in @collections %>
+						<li>
 							<a href="/<%= settings.base_route %>/collections/<%= collection.id %>">
-                <%= collection.label %>
-              </a>
-            </li>
-          <% end %>
-        </ul>
-      </nav>
-    </header>
-    <main>
-      <%= yield %>
-    </main>
-    <footer>
-    </footer>
-  </body>
+								<%= collection.label %>
+							</a>
+						</li>
+					<% end %>
+				</ul>
+			</nav>
+		</header>
+		<main>
+			<%= yield %>
+		</main>
+		<footer>
+		</footer>
+	</body>
 </html>

@@ -17,8 +17,8 @@ if __FILE__ == $0
 
 	OptionParser.new do |p|
 		p.banner = "Usage: #{__FILE__} [OPTIONS]"
-    	p.on '-n NAME', '--name=NAME', 'Project name'
-    	p.parse! into: opts
+		p.on '-n NAME', '--name=NAME', 'Project name'
+		p.parse! into: opts
 	end
 
 	cmd = ARGV.shift
