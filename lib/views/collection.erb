@@ -1,13 +1,54 @@
-<h2><%= @collection.label %></h2>
-<ul>
-	<% for item in @items %>
-		<li>
-			<a href="/<%= settings.base_route %>/collections/<%= @collection.id %>/item?id=<%= item.id %>">
-				<%= item.fields['title'] %>
-			</a>
-		</li>
-	<% end %>
-	<a href="/<%= settings.base_route %>/collections/<%= @collection.id %>/item">
-		New <%= @collection.id %>
-	</a>
-</ul>
+<header>
+	<h2><%= @collection.label %></h2>
+	<span class="controls">
+		<a href="/<%= settings.base_route %>/collections/<%= @collection.id %>/item">
+			New <%= @collection.id %>
+		</a>
+	</span>
+</header>
+<% if @items.length == 0 %>
+	<div class="center">
+		<p>Nothing to show.</p>
+		<p>
+			Create a <a href="<%= settings.base_route %>/collections/<%= @collection.id %>/item">new <%= @collection.label %></a>.
+		</p>
+	</div>
+<% else %>
+	<table>
+		<tr>
+			<th class="grow">Name</th>
+			<th>Created at</th>
+			<th>Last updated</th>
+			<th></th>
+			<th></th>
+		</tr>
+		<% for item in @items %>
+			<tr>
+				<td>
+					<a href="/<%= settings.base_route %>/collections/<%= @collection.id %>/item?id=<%= item.id %>">
+						<%= item.fields['title'] %>
+					</a>
+				</td>
+				<td>
+					<%= Time.parse(item.fields['created_at']).strftime('%b %d, %Y') %>
+				</td>
+				<td>
+					<%= Time.parse(item.fields['updated_at']).strftime('%b %d, %Y') %>
+				</td>
+				<td class="controls">
+					<a href="/<%= settings.base_route %>/collections/<%= @collection.id %>/item?id=<%= item.id %>">
+						Edit
+					</a>
+				</td>
+				<td>
+					<form
+						action="/<%= settings.base_route %>/collections/<%= @collection.id %>/delete"
+						method="post"
+					>
+						<button class="danger" type="submit">Delete</button>
+					</form>
+				</td>
+			</tr>
+		<% end %>
+	</table>
+<% end %>

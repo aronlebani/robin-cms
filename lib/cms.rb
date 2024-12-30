@@ -24,6 +24,8 @@ module RobinCMS
 			set :admin_pass, BCrypt::Password.create($cfg.admin_password)
 			set :build_command, $cfg.build_command
 			set :base_route, $cfg.base_route
+			set :site_name, $cfg.site_name
+			set :accent_color, $cfg.accent_color
 		end
 
 		namespace "/#{settings.base_route}" do

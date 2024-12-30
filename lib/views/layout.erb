@@ -4,28 +4,166 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<link rel="stylesheet" href="/assets/stylesheet.css">
-		<script type="text/javascript" src="/assets/script.js"></script>
 		<title>Robin CMS</title>
-		<meta property="og:title" content="" />
-		<meta property="og:url" content="" />
-		<meta property="og:type" content="website" />
-		<meta property="og:description" content="" />
 		<style>
+			:root {
+				--border-color: #e6e6e6;
+				--bg-color: #f5f5f5;
+				--font-color: #141414;
+				--accent-color: <%= settings.accent_color %>;
+				--safe-color: #29903b;
+				--danger-color: #f85149;
+				--header-height: 3rem;
+				--padding: 0.5rem;
+				--nav-width: 12rem;
+			}
+
+			body {
+				margin: 0;
+				height: 100vh;
+				overflow-y: hidden;
+				color: var(--font-color);
+				font-family: arial, sans-serif;
+			}
+
+			h1 {
+				font-size: 1.5rem;
+			}
+
+			h2 {
+				font-size: 1.25rem;
+			}
+
+			header {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				height: var(--header-height);
+				border-bottom: 1px solid var(--border-color);
+				padding: 0 var(--padding);
+				box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
+			}
+
+			header h1 {
+				margin: 0;
+			}
+
+			footer {
+				margin-top: 1rem;
+			}
+
+			main {
+				display: flex;
+			}
+
+			ul {
+				padding-left: 0;
+				list-style-type: none;
+			}
+
+			button.danger {
+				color: var(--danger-color);
+			}
+
+			nav {
+				background-color: var(--bg-color);
+				border-right: var(--border-color);
+				flex: 0 1 auto;
+				min-width: var(--nav-width);
+			}
+
+			nav ul li a {
+				color: var(--font-color);
+				text-decoration: none;
+				display: block;
+				padding: var(--padding);
+			}
+
+			nav ul li.current a {
+				background-color: var(--border-color);
+				box-shadow: rgba(0, 0, 0, 0.06) 0px 2px 4px 0px inset;
+			}
+
+			nav ul li:hover a {
+				color: var(--accent-color);
+			}
+
+			table {
+				width: 100%;
+				border-collapse: collapse;
+			}
+
+			td,
+			th {
+				text-align: left;
+				padding: var(--padding);
+				white-space: nowrap;
+			}
+
+			tr:nth-child(even) {
+				background-color: var(--bg-color);
+			}
+
+			label {
+				display: block;
+				margin-bottom: var(--padding);
+			}
+
+			#content {
+				flex: 1 0 auto;
+				height: calc(100vh - var(--header-height));
+				overflow-y: scroll;
+				padding: 0 var(--padding);
+			}
+
+			#content header {
+				margin: 0 calc(-1 * var(--padding));
+			}
+
 			#editor {
 				height: 16rem;
+			}
+
+			.controls > *:not(:first-child) {
+				margin-left: var(--padding);
+			}
+
+			.center {
+				text-align: center;
+			}
+
+			.grow {
+				width: 100%;
+			}
+
+			.field {
+				margin: 1rem 0;
 			}
 		</style>
 	</head>
 	<body>
 		<header>
-			<h1>Admin</h1>
-			<a href="/<%= settings.base_route %>/logout">Log out</a>
-			<h2>Collections</h2>
+			<h1><%= settings.site_name %> admin</h1>
+			<span class="controls">
+				<a href="/<%= settings.base_route %>/logout">Log out</a>
+			</span>
+		</header>
+		<main>
 			<nav>
 				<ul>
+					<li
+						<% if request.path_info.split('/').last == 'collections' %>
+							class="current"
+						<% end %>
+					>
+						<a href="/<%= settings.base_route %>/collections">Dashboard</a>
+					</li>
 					<% for collection in @collections %>
-						<li>
+						<li
+							<% if request.path_info.split('/').last == collection.id %>
+								class="current"
+							<% end %>
+						>
 							<a href="/<%= settings.base_route %>/collections/<%= collection.id %>">
 								<%= collection.label %>
 							</a>
@@ -33,11 +171,12 @@
 					<% end %>
 				</ul>
 			</nav>
-		</header>
-		<main>
-			<%= yield %>
+			<div id="content">
+				<%= yield %>
+				<footer>
+					Powered by <a href="https://github.com/aronlebani/robin-cms.git">Robin CMS</a> <%= RobinCMS::VERSION %>
+				</footer>
+			</div>
 		</main>
-		<footer>
-		</footer>
 	</body>
 </html>

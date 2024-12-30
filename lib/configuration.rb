@@ -73,8 +73,8 @@ module RobinCMS
 	class ConfigurationParser
 		include RobinCMS
 
-		attr_reader :content_dir, :admin_username, :admin_password,
-			:build_command, :base_route, :collections
+		attr_reader :site_name, :content_dir, :admin_username, :admin_password,
+			:build_command, :base_route, :accent_color, :collections
 
 		def initialize(filename)
 			config = YAML.load_file(filename)
@@ -83,11 +83,14 @@ module RobinCMS
 				raise ParseError, "At least one collection is required"
 			end
 
+			@site_name = config['site_name'] || 'RobinCMS'
 			@content_dir = config['content_dir'] || 'content'
 			@admin_username = config['admin_username'] || 'admin'
 			@admin_password = config['admin_password'] || 'admin'
 			@build_command = config['build_command'] || 'nanoc compile'
 			@base_route = config['base_route'] || 'cms'
+			@accent_color = config['accent_color'] || '#4493f8'
+
 			@collections = config['collections'].map { |c| CollectionParser.new(c) }
 		end
 	end

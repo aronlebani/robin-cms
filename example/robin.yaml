@@ -1,8 +1,10 @@
+site_name: "AMCE.org"
 content_dir: "content"
 admin_username: "admin"
 admin_password: "admin"
 build_command: "nanoc compile"
 base_route: "cms"
+accent_color: "#4493f8"
 collections:
   - name: "poem"
     label: "Poem"
