@@ -23,7 +23,7 @@
 				height: 100vh;
 				overflow-y: hidden;
 				color: var(--font-color);
-				font-family: arial, sans-serif;
+				font-family: sans-serif;
 			}
 
 			h1 {
@@ -48,8 +48,12 @@
 				margin: 0;
 			}
 
+			header.--level-2 {
+				box-shadow: none;
+			}
+
 			footer {
-				margin-top: 1rem;
+				margin-top: 2rem;
 			}
 
 			main {
@@ -59,10 +63,6 @@
 			ul {
 				padding-left: 0;
 				list-style-type: none;
-			}
-
-			button.danger {
-				color: var(--danger-color);
 			}
 
 			nav {
@@ -109,6 +109,28 @@
 				margin-bottom: var(--padding);
 			}
 
+			dialog {
+				border: 1px solid var(--border-color);
+				box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
+				width: 20rem;
+				white-space: wrap;
+				padding: 1rem;
+			}
+
+			dialog::backdrop {
+				background: rgba(0, 0, 0, .15);
+				backdrop-filter: blur(1px);
+			}
+
+			dialog .controls {
+				display: flex;
+				align-items: center;
+				justify-content: flex-end;
+				background-color: var(--bg-color);
+				margin: 0 -1rem -1rem -1rem;
+				padding: 1rem;
+			}
+
 			#content {
 				flex: 1 0 auto;
 				height: calc(100vh - var(--header-height));
@@ -120,6 +142,15 @@
 				margin: 0 calc(-1 * var(--padding));
 			}
 
+			#items-table {
+				margin-top: 1rem;
+			}
+
+			#no-items {
+				margin: 2rem 0;
+				text-align: center;
+			}
+
 			#editor {
 				height: 16rem;
 			}
@@ -128,16 +159,19 @@
 				margin-left: var(--padding);
 			}
 
-			.center {
-				text-align: center;
+			.field {
+				margin: 1rem 0;
 			}
 
 			.grow {
 				width: 100%;
 			}
 
-			.field {
-				margin: 1rem 0;
+			.--danger {
+				color: var(--danger-color);
+			}
+
+			.--safe {
 			}
 		</style>
 	</head>

@@ -106,9 +106,9 @@ module RobinCMS
 				redirect "/#{settings.base_route}/collections"
 			end
 
-			post '/collections/:c_id/delete' do
+			post '/collections/:c_id/item/delete' do
 				if params['id']
-					@item = Item.find(params['id'], params['collection_id'])
+					@item = Item.find(params['id'], params['c_id'])
 
 					return 404 unless @item
 
@@ -117,7 +117,7 @@ module RobinCMS
 					return 404
 				end
 
-				redirect "/#{settings.base_route}/collections"
+				redirect "/#{settings.base_route}/collections/#{params['c_id']}"
 			end
 
 			post '/publish' do
