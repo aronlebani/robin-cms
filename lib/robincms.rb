@@ -4,3 +4,4 @@ module RobinCMS
 end
 
 require_relative 'cms'
+require_relative 'helpers'

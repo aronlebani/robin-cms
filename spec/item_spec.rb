@@ -257,6 +257,32 @@ describe Item do
 		expect(items.length).to eq(0)
 	end
 
+	it 'returns everything if collection is omitted' do
+		File.write(File.join(__dir__, 'tmp', 'a-poem-about-ruby.html'), <<~HTML)
+			---
+			title: A poem about Ruby
+			author_name: Aron
+			created_at: '2024-12-23'
+			updated_at: '2024-12-23'
+			kind: poem
+			---
+			<p>This is a poem about <i>Ruby</i>.</p>
+		HTML
+		File.write(File.join(__dir__, 'tmp', 'an-article-about-ruby.html'), <<~HTML)
+			---
+			title: An article about Ruby
+			author_name: Aron
+			created_at: '2024-12-23'
+			updated_at: '2024-12-23'
+			kind: article
+			---
+			<p>This is an article about <i>Ruby</i>.</p>
+		HTML
+		items = Item.all
+
+		expect(items.length).to eq(2)
+	end
+
 	it 'finds nested items' do
 		File.write(File.join(__dir__, 'tmp', 'artists', 'surprise-chef.yaml'), <<~HTML)
 			---

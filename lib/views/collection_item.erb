@@ -16,8 +16,8 @@
 			<% if @item.id %>
 				<%= erb :dialog, locals: {
 					id: "delete#{@item.id}",
-					heading: "Delete #{item.fields['title']}?",
-					body: "Are you sure you want to delete #{item.fields['title']}?",
+					heading: "Delete #{@item.fields['title']}?",
+					body: "Are you sure you want to delete #{@item.fields['title']}?",
 					action: "/#{settings.base_route}/collections/#{@collection.id}/item/delete?id=#{@item.id}",
 					button_label: 'Delete',
 					danger: true

@@ -53,7 +53,7 @@ module RobinCMS
 				item
 			end
 
-			def all(collection_id)
+			def all(collection_id = nil)
 				Dir.glob(File.join($cfg.content_dir, '**/*')).map do |f|
 					next unless File.file?(f)
 
@@ -62,7 +62,9 @@ module RobinCMS
 					content = File.read(f)
 					item = deserialize(id, ext, content)
 
-					next unless item.fields['kind'] == collection_id
+					unless collection_id.nil?
+						next unless item.fields['kind'] == collection_id
+					end
 
 					item
 				end.compact

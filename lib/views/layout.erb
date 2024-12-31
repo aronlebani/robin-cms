@@ -199,7 +199,7 @@
 							<% end %>
 						>
 							<a href="/<%= settings.base_route %>/collections/<%= collection.id %>">
-								<%= collection.label %>
+								<%= RobinCMS::Helpers.pluralize(collection.label) %>
 							</a>
 						</li>
 					<% end %>

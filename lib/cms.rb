@@ -59,6 +59,7 @@ module RobinCMS
 
 			get '/collections' do
 				@collections = $cfg.collections
+				@all_items = Item.all
 
 				erb :collections
 			end

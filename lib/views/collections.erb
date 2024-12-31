@@ -1,1 +1,25 @@
 <h2>Dashboard</h2>
+<table>
+	<tr>
+		<th>Collection</th>
+		<th>Count</th>
+		<th></th>
+		<th></th>
+	</tr>
+	<% for collection in @collections %>
+		<tr>
+			<td><%= collection.label %></td>
+			<td><%= @all_items.filter { |item| item.fields['kind'] == collection.id }.count %></td>
+			<td>
+				<a href="/<%= settings.base_route %>/collections/<%= collection.id %>">
+					View <%= RobinCMS::Helpers.pluralize(collection.label) %>
+				</a>
+			</td>
+			<td>
+				<a href="/<%= settings.base_route %>/collections/<%= collection.id %>/item">
+					New <%= collection.label %>
+				</a>
+			</td>
+		</tr>
+	<% end %>
+</table>
