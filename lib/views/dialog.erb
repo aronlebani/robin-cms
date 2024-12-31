@@ -7,11 +7,15 @@
 		<% end %>
 	</p>
 	<div class="controls">
-		<form method="dialog">
-			<button>Close</button>
+		<form id="dialog-close" method="dialog">
+			<button type="submit" form="dialog-close">Close</button>
 		</form>
-		<form action="<%= action %>" method="post">
-			<button class="<%= danger ? '--danger' : '' %>">
+		<form id="dialog-action" action="<%= action %>" method="post">
+			<button
+				type="submit"
+				form="dialog-action"
+				class="<%= danger ? '--danger' : '' %>"
+			>
 				<%= button_label %>
 			</button>
 		</form>

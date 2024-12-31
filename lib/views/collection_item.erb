@@ -1,7 +1,17 @@
 <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
 
+<% if @item.id %>
+	<%= erb :dialog, locals: {
+		id: "delete#{@item.id}",
+		heading: "Delete #{@item.fields['title']}?",
+		body: "Are you sure you want to delete #{@item.fields['title']}?",
+		action: "/#{settings.base_route}/collections/#{@collection.id}/item/delete?id=#{@item.id}",
+		button_label: 'Delete',
+		danger: true
+	} %>
+<% end %>
 <form
-	id="item"
+	id="item-form"
 	<% if @item.id %>
 		action="/<%= settings.base_route %>/collections/<%= @collection.id %>/item?id=<%= @item.id %>"
 	<% else %>
@@ -14,15 +24,7 @@
 		<span class="controls">
 			<a href="/<%= settings.base_route %>/collections/<%= @collection.id %>">Back</a>
 			<% if @item.id %>
-				<%= erb :dialog, locals: {
-					id: "delete#{@item.id}",
-					heading: "Delete #{@item.fields['title']}?",
-					body: "Are you sure you want to delete #{@item.fields['title']}?",
-					action: "/#{settings.base_route}/collections/#{@collection.id}/item/delete?id=#{@item.id}",
-					button_label: 'Delete',
-					danger: true
-				} %>
-				<button class="--danger" onclick="delete<%= @item.id %>.showModal()">
+				<button type="button" class="--danger" onclick="delete<%= @item.id %>.showModal()">
 					Delete
 				</button>
 			<% end %>
@@ -95,7 +97,7 @@
 		</div>
 	<% end %>
 	<footer>
-		<button type="submit">Submit</button>
+		<button type="submit" form="item-form">Submit</button>
 	</footer>
 </form>
 
