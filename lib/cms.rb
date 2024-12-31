@@ -125,6 +125,8 @@ module RobinCMS
 				res = system(settings.build_command)
 
 				return 500 unless res
+
+				redirect "/#{settings.base_route}/collections"
 			end
 
 			before /\/collections.*/ do

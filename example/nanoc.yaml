@@ -11,5 +11,9 @@ prune:
 data_sources:
   - type: filesystem
     encoding: utf-8
+  - type: filesystem
+    encoding: utf-8
+    content_dir: cms_content
+    layouts_dir: cms_layouts
 
 base_url: 'https://example.org'

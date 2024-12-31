@@ -4,11 +4,14 @@
 		<a href="/<%= settings.base_route %>/collections/<%= @collection.id %>/item">
 			New <%= @collection.id %>
 		</a>
+		<form id="publish-form" action="/<%= settings.base_route %>/publish" method="post">
+			<button type="submit" form="publish-form">Publish site</button>
+		</form>
 	</span>
 </header>
 <% if @items.length == 0 %>
 	<p id="no-items">
-		Nothing to show. Create a <a href="<%= settings.base_route %>/collections/<%= @collection.id %>/item">new <%= @collection.label %></a>.
+		Nothing to show. Create a <a href="/<%= settings.base_route %>/collections/<%= @collection.id %>/item">new <%= @collection.label %></a>.
 	</p>
 <% else %>
 	<table id="items-table">

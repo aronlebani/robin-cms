@@ -1,5 +1,5 @@
 site_name: "AMCE.org"
-content_dir: "content"
+content_dir: "cms_content"
 admin_username: "admin"
 admin_password: "admin"
 build_command: "nanoc compile"
