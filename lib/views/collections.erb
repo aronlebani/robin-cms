@@ -8,8 +8,10 @@
 	</tr>
 	<% for collection in @collections %>
 		<tr>
-			<td><%= collection.label %></td>
-			<td><%= @all_items.filter { |item| item.fields['kind'] == collection.id }.count %></td>
+			<td><%= RobinCMS::Helpers.pluralize(collection.label) %></td>
+			<td>
+				<%= @all_items.filter { |item| item.fields['kind'] == collection.id }.count %>
+			</td>
 			<td>
 				<a href="/<%= settings.base_route %>/collections/<%= collection.id %>">
 					View <%= RobinCMS::Helpers.pluralize(collection.label) %>

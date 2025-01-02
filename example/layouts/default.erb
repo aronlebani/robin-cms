@@ -2,13 +2,22 @@
 <html lang="en">
 	<head>
 		<title>Example</title>
-		<link rel="stylesheet" href="/stylesheet.css">
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="description" content="An example made with Nanoc and RobinCMS">
 	</head>
 	<body>
 		<main>
+			<nav>
+				<h2><a href="/">Poems</a></h2>
+				<ul>
+					<% for item in @items.filter { |i| i[:kind] == 'poem' } %>
+						<li>
+							<a href="<%= item.path %>"><%= item[:title] %></a>
+						</li>
+					<% end %>
+				</ul>
+			</nav>
 			<%= yield %>
 		</main>
 	</body>

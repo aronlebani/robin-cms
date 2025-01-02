@@ -1,4 +1,4 @@
-site_name: "AMCE.org"
+site_name: "RobinCMS"
 content_dir: "cms_content"
 admin_username: "admin"
 admin_password: "admin"
@@ -8,31 +8,18 @@ accent_color: "#4493f8"
 collections:
   - name: "poem"
     label: "Poem"
-    location: "/"
-    filetype: "html"
     fields:
-      - { label: "Title", name: "title", type: "input" }
       - { label: "Author", name: "author_name", type: "input" }
       - { label: "Content", name: "content", type: "richtext" }
-  - name: "article"
-    label: "Article"
-    location: "/"
-    filetype: "html"
+  - name: "book"
+    label: "Book"
+    filetype: "yaml"
     fields:
-      - { label: "Title", name: "title", type: "input" }
       - { label: "Author", name: "author_name", type: "input" }
-      - { label: "Content", name: "content", type: "richtext" }
-  - name: "song"
-    label: "Song"
-    location: "/"
+  - name: "record"
+    label: "Record"
+    location: "/records"
     filetype: "yaml"
     fields:
-      - { label: "Title", name: "title", type: "input" }
-      - { label: "Artist", name: "artist_name", type: "input" }
-  - name: "artist"
-    label: "Artist"
-    location: "/artists"
-    filetype: "yaml"
-    fields:
-      - { label: "Title", name: "title", type: "input" }
-      - { label: "From", name: "from", type: "input" }
+      - { label: "Artist", name: "artist", type: "input" }
+      - { label: "Genre", name: "genre", type: "input" }
