@@ -49,7 +49,7 @@
 				margin: 0;
 			}
 
-			header.--level-2 {
+			header.secondary {
 				box-shadow: none;
 			}
 
@@ -92,6 +92,7 @@
 			table {
 				width: 100%;
 				border-collapse: collapse;
+				margin-top: 1rem;
 			}
 
 			td,
@@ -111,9 +112,12 @@
 			}
 
 			input {
+				border: 1px solid var(--border-color);
+				border-radius: var(--border-radius);
 				width: 100%;
 				max-width: 30rem;
 				box-sizing: border-box;
+				padding: var(--padding);
 			}
 
 			dialog {
@@ -157,17 +161,27 @@
 				margin: 0 calc(-1 * var(--padding));
 			}
 
-			#items-table {
-				margin-top: 1rem;
-			}
-
 			#no-items {
 				margin: 2rem 0;
 				text-align: center;
 			}
 
+			#toolbar {
+				border: 1px solid var(--border-color);
+				border-top-left-radius: var(--border-radius);
+				border-top-right-radius: var(--border-radius);
+			}
+
 			#editor {
 				height: 16rem;
+				border: 1px solid var(--border-color);
+				border-top: 0;
+				border-bottom-left-radius: var(--border-radius);
+				border-bottom-right-radius: var(--border-radius);
+			}
+
+			#editor .ql-editor {
+				padding: var(--padding);
 			}
 
 			.controls {
@@ -195,7 +209,7 @@
 			}
 		</style>
 	</head>
-	<body>
+	<body <% if flash[:success] %>onload="publishsuccess.showModal()"<% end %>>
 		<header>
 			<h1><%= settings.site_name %> admin</h1>
 			<span class="controls">
@@ -236,5 +250,14 @@
 				</footer>
 			</div>
 		</main>
+		<dialog id="publishsuccess">
+			<h2>Success!</h2>
+			<p>Your site has been successfully published!</p>
+			<div class="controls">
+				<form id="dialog-close" method="dialog">
+					<button type="submit" form="dialog-close">Continue</button>
+				</form>
+			</div>
+		</dialog>
 	</body>
 </html>

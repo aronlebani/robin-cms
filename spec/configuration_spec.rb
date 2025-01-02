@@ -35,6 +35,12 @@ describe ConfigurationParser do
 		expect(cfg.collections[0].fields.find { |f| f.id == 'title' }.label).to eq('My title')
 	end
 
+	it 'always puts the title field first' do
+		cfg = ConfigurationParser.new(File.join(__dir__, 'files/valid.yaml'))
+
+		expect(cfg.collections[1].fields[0].id).to eq('title')
+	end
+
 	it 'uses the default location if not explicitly set' do
 		cfg = ConfigurationParser.new(File.join(__dir__, 'files/no_location.yaml'))
 

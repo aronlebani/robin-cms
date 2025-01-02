@@ -1,4 +1,4 @@
-<header class="--level-2">
+<header class="secondary">
 	<h2><%= @collection.label %></h2>
 	<span class="controls">
 		<a href="/<%= settings.base_route %>/collections/<%= @collection.id %>/item">
@@ -16,7 +16,7 @@
 		Nothing to show. Create a <a href="/<%= settings.base_route %>/collections/<%= @collection.id %>/item">new <%= @collection.label %></a>.
 	</p>
 <% else %>
-	<table id="items-table">
+	<table>
 		<tr>
 			<th class="grow">Name</th>
 			<th>Created at</th>

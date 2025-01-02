@@ -1,4 +1,13 @@
-<h2>Dashboard</h2>
+<header class="secondary">
+	<h2>Dashboard</h2>
+	<span class="controls">
+		<% if settings.build_command %>
+			<form id="publish-form" action="/<%= settings.base_route %>/publish" method="post">
+				<button type="submit" form="publish-form">Publish site</button>
+			</form>
+		<% end %>
+	</span>
+</header>
 <table>
 	<tr>
 		<th>Collection</th>
@@ -25,12 +34,3 @@
 		</tr>
 	<% end %>
 </table>
-<dialog id="publish-success" <% if flash[:success] %>open<% end %>>
-	<h2>Success!</h2>
-	<p>Your site has been successfully published!</p>
-	<div class="controls">
-		<form id="dialog-close" method="dialog">
-			<button type="submit" form="dialog-close">Continue</button>
-		</form>
-	</div>
-</dialog>

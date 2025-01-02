@@ -39,6 +39,7 @@ module RobinCMS
 			@fields = (config['fields'] || [])
 				.concat(IMPLICIT_FIELDS)
 				.uniq { |f| f['name'] }
+				.sort { |fa, fb| fa['name'] == 'title' ? -1 : fb['name'] == 'title' ? 1 : 0 }
 				.map { |f| FieldParser.new(f) }
 		end
 	end
