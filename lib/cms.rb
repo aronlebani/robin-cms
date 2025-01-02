@@ -41,7 +41,8 @@ module RobinCMS
 			end
 
 			get '/login' do
-				erb :login, layout: false
+				@auth_layout = true
+				erb :login
 			end
 
 			post '/login' do
