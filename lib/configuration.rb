@@ -87,7 +87,7 @@ module RobinCMS
 			@content_dir = config['content_dir'] || 'content'
 			@admin_username = config['admin_username'] || 'admin'
 			@admin_password = config['admin_password'] || 'admin'
-			@build_command = config['build_command'] || 'nanoc compile'
+			@build_command = config['build_command'] || nil
 			@base_route = config['base_route'] || 'cms'
 			@accent_color = config['accent_color'] || '#4493f8'
 

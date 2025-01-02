@@ -4,9 +4,11 @@
 		<a href="/<%= settings.base_route %>/collections/<%= @collection.id %>/item">
 			New <%= @collection.id %>
 		</a>
-		<form id="publish-form" action="/<%= settings.base_route %>/publish" method="post">
-			<button type="submit" form="publish-form">Publish site</button>
-		</form>
+		<% if settings.build_command %>
+			<form id="publish-form" action="/<%= settings.base_route %>/publish" method="post">
+				<button type="submit" form="publish-form">Publish site</button>
+			</form>
+		<% end %>
 	</span>
 </header>
 <% if @items.length == 0 %>
@@ -49,9 +51,6 @@
 						button_label: 'Delete',
 						danger: true
 					} %>
-					<button class="--danger" onclick="delete<%= item.id %>.showModal()">
-						Delete
-					</button>
 				</td>
 			</tr>
 		<% end %>

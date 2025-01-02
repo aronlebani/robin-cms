@@ -1,4 +1,4 @@
-<dialog id="<%= id %>">
+<dialog id="<%= id.gsub('-', '') %>">
 	<h2><%= heading %></h2>
 	<p>
 		<%= body %>
@@ -21,3 +21,12 @@
 		</form>
 	</div>
 </dialog>
+<button
+	type="button"
+	<% if danger %>
+		class="--danger"
+	<% end %>
+	onclick="<%= id.gsub('-', '') %>.showModal()"
+>
+	<%= button_label %>
+</button>

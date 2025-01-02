@@ -33,6 +33,7 @@ Gem::Specification.new do |spec|
   gem "rackup"
   gem "sinatra"
   gem "sinatra-contrib"
+  gem "sinatra-flash"
 
   group :development do
 	gem "puma"

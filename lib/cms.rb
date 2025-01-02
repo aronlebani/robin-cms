@@ -3,6 +3,7 @@
 require 'bcrypt'
 require 'securerandom'
 require 'sinatra/base'
+require 'sinatra/flash'
 require 'sinatra/namespace'
 
 require_relative 'item'
@@ -11,6 +12,7 @@ require_relative 'configuration'
 
 module RobinCMS
 	class CMS < Sinatra::Base
+		register Sinatra::Flash
 		register Sinatra::Namespace
 
 		configure do
@@ -126,6 +128,7 @@ module RobinCMS
 
 				return 500 unless res
 
+				flash[:success] = true
 				redirect "/#{settings.base_route}/collections"
 			end
 

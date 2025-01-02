@@ -1,15 +1,21 @@
 <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
 
-<% if @item.id %>
-	<%= erb :dialog, locals: {
-		id: "delete#{@item.id}",
-		heading: "Delete #{@item.fields['title']}?",
-		body: "Are you sure you want to delete #{@item.fields['title']}?",
-		action: "/#{settings.base_route}/collections/#{@collection.id}/item/delete?id=#{@item.id}",
-		button_label: 'Delete',
-		danger: true
-	} %>
-<% end %>
+<header>
+	<h2><%= @item.id ? 'Edit' : 'New' %> <%= @collection.id %></h2>
+	<span class="controls">
+		<a href="/<%= settings.base_route %>/collections/<%= @collection.id %>">Back</a>
+		<% if @item.id %>
+			<%= erb :dialog, locals: {
+				id: "delete#{@item.id}",
+				heading: "Delete #{@item.fields['title']}?",
+				body: "Are you sure you want to delete #{@item.fields['title']}?",
+				action: "/#{settings.base_route}/collections/#{@collection.id}/item/delete?id=#{@item.id}",
+				button_label: 'Delete',
+				danger: true
+			} %>
+		<% end %>
+	</span>
+</header>
 <form
 	id="item-form"
 	<% if @item.id %>
@@ -19,17 +25,6 @@
 	<% end %>
 	method="post"
 >
-	<header>
-		<h2><%= @item.id ? 'Edit' : 'New' %> <%= @collection.id %></h2>
-		<span class="controls">
-			<a href="/<%= settings.base_route %>/collections/<%= @collection.id %>">Back</a>
-			<% if @item.id %>
-				<button type="button" class="--danger" onclick="delete<%= @item.id %>.showModal()">
-					Delete
-				</button>
-			<% end %>
-		</span>
-	</header>
 	<% for field in @collection.fields %>
 		<div class="field">
 			<% unless field.hidden %>
