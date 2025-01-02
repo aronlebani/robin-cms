@@ -14,8 +14,8 @@
 				--accent-color: <%= settings.accent_color %>;
 				--safe-color: #29903b;
 				--danger-color: #f85149;
-				--header-height: 3rem;
-				--padding: 0.5rem;
+				--header-height: 4rem;
+				--spacer: 0.5rem;
 				--nav-width: 12rem;
 			}
 
@@ -41,7 +41,7 @@
 				justify-content: space-between;
 				height: var(--header-height);
 				border-bottom: 1px solid var(--border-color);
-				padding: 0 var(--padding);
+				padding: 0 var(--spacer);
 				box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
 			}
 
@@ -77,7 +77,7 @@
 				color: var(--font-color);
 				text-decoration: none;
 				display: block;
-				padding: var(--padding);
+				padding: var(--spacer);
 			}
 
 			nav ul li.current a {
@@ -98,7 +98,7 @@
 			td,
 			th {
 				text-align: left;
-				padding: var(--padding);
+				padding: var(--spacer);
 				white-space: nowrap;
 			}
 
@@ -108,7 +108,7 @@
 
 			label {
 				display: block;
-				margin-bottom: var(--padding);
+				margin-bottom: var(--spacer);
 			}
 
 			input {
@@ -117,7 +117,11 @@
 				width: 100%;
 				max-width: 30rem;
 				box-sizing: border-box;
-				padding: var(--padding);
+				padding: var(--spacer);
+			}
+
+			fieldset {
+				border: 0;
 			}
 
 			dialog {
@@ -141,24 +145,33 @@
 				padding: 1rem;
 			}
 
+			#site-header #robin-logo {
+				width: calc(var(--header-height) - 2 * var(--spacer));
+				margin-right: var(--spacer);
+			}
+
 			#contentarea {
 				flex: 1 0 auto;
 				height: calc(100vh - var(--header-height));
 				overflow-y: scroll;
-				padding: 0 var(--padding);
+				padding: 0 var(--spacer);
 
 				<% if @auth_layout %>
 					margin: 2rem auto 0 auto;
-					flex: 0 1 20rem;
+					flex: 0 1 40rem;
 					height: unset;
 					padding: 1rem;
-					border: 1px solid var(--border-color);
-					border-radius: var(--border-radius);
 				<% end %>
 			}
 
 			#contentarea header {
-				margin: 0 calc(-1 * var(--padding));
+				margin: 0 calc(-1 * var(--spacer));
+			}
+
+			#contentarea > footer {
+				<% if @auth_layout %>
+					text-align: center;
+				<% end %>
 			}
 
 			#no-items {
@@ -181,7 +194,22 @@
 			}
 
 			#editor .ql-editor {
-				padding: var(--padding);
+				padding: var(--spacer);
+			}
+
+			#login-form {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+			}
+
+			#login-form #robin-logo {
+				width: 20rem;
+				margin-right: 4rem;
+			}
+
+			#login-form > * {
+				flex: 1 1 50%;
 			}
 
 			.controls {
@@ -190,7 +218,7 @@
 			}
 
 			.controls > *:not(:first-child):not(dialog) {
-				margin-left: var(--padding);
+				margin-left: var(--spacer);
 			}
 
 			.field {
@@ -210,8 +238,11 @@
 		</style>
 	</head>
 	<body <% if flash[:success] %>onload="publishsuccess.showModal()"<% end %>>
-		<header>
-			<h1><%= settings.site_name %> admin</h1>
+		<header id="site-header">
+			<span class="controls">
+				<%= erb :logo %>
+				<h1><%= settings.site_name %> admin</h1>
+			</span>
 			<span class="controls">
 				<% unless @auth_layout %>
 					<a href="/<%= settings.base_route %>/logout">Log out</a>

@@ -1,13 +1,8 @@
 # Robin CMS
 
-## TODO
+![Robin CMS logo](./assets/robin-logo.png)
 
-- Can I create a github backend with a Nanoc helper to generate the frontend
-  views as static files?
-
-  So two ways of using it:
-    - Standalone flat file CMS
-    - As a github backend for Nanoc
+A minimalist CMS built with Ruby and Sinatra.
 
 ## Usage
 

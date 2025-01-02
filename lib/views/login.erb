@@ -1,14 +1,17 @@
-<form name="login" method="post">
-	<h2>Log in</h2>
-	<div class="field">
-		<label for="username">Username</label>
-		<input id="username" name="username" required />
-	</div>
-	<div class="field">
-		<label for="password">Password</label>
-		<input id="password" type="password" name="password" required />
-	</div>
-	<footer>
-		<button type="submit">Log in</button>
-	</footer>
+<form id="login-form" name="login" method="post">
+	<%= erb :logo %>
+	<fieldset>
+		<h2>Log in</h2>
+		<div class="field">
+			<label for="username">Username</label>
+			<input id="username" name="username" required />
+		</div>
+		<div class="field">
+			<label for="password">Password</label>
+			<input id="password" type="password" name="password" required />
+		</div>
+		<footer>
+			<button type="submit">Log in</button>
+		</footer>
+	</fieldset>
 </form>
