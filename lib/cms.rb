@@ -46,17 +46,17 @@ module RobinCMS
 			end
 
 			post '/login' do
-				unless authenticated?(params['username'], params['password'])
+				unless authenticated?(params[:username], params[:password])
 					@error = 'Incorrect username or password'
 					erb :login
 				end
 
-				session['authenticated'] = true
+				session[:authenticated] = true
 				redirect "/#{settings.base_route}/collections"
 			end
 
 			get '/logout' do
-				session['authenticated'] = nil
+				session[:authenticated] = nil
 				redirect "/#{settings.base_route}/login"
 			end
 
@@ -69,30 +69,30 @@ module RobinCMS
 
 			get '/collections/:c_id' do
 				@collections = $cfg.collections
-				@collection = $cfg.collections.find { |c| c.id.to_s == params['c_id'] }
-				@items = Item.all(params['c_id'])
+				@collection = $cfg.collections.find { |c| c.id.to_s == params[:c_id] }
+				@items = Item.all(params[:c_id])
 
 				erb :collection
 			end
 
 			get '/collections/:c_id/item' do
 				@collections = $cfg.collections
-				@collection = $cfg.collections.find { |c| c.id.to_s == params['c_id'] }
+				@collection = $cfg.collections.find { |c| c.id.to_s == params[:c_id] }
 
-				if params['id']
-					@item = Item.find(params['id'], params['c_id'])
+				if params[:id]
+					@item = Item.find(params[:id], params[:c_id])
 
 					return 404 unless @item
 				else
-					@item = Item.new(nil, params['c_id'])
+					@item = Item.new(nil, params[:c_id])
 				end
 
 				erb :collection_item
 			end
 
 			post '/collections/:c_id/item' do
-				if params['id']
-					@item = Item.find(params['id'], params['c_id'])
+				if params[:id]
+					@item = Item.find(params[:id], params[:c_id])
 
 					return 404 unless @item
 
@@ -100,7 +100,7 @@ module RobinCMS
 					@item.update
 				else
 					begin
-						Item.create(params['c_id'], params)
+						Item.create(params[:c_id], params)
 					rescue IOError
 						@error = 'An item with the same name already exists'
 						erb :error
@@ -111,8 +111,8 @@ module RobinCMS
 			end
 
 			post '/collections/:c_id/item/delete' do
-				if params['id']
-					@item = Item.find(params['id'], params['c_id'])
+				if params[:id]
+					@item = Item.find(params[:id], params[:c_id])
 
 					return 404 unless @item
 
@@ -121,7 +121,7 @@ module RobinCMS
 					return 404
 				end
 
-				redirect "/#{settings.base_route}/collections/#{params['c_id']}"
+				redirect "/#{settings.base_route}/collections/#{params[:c_id]}"
 			end
 
 			post '/publish' do
@@ -134,7 +134,7 @@ module RobinCMS
 			end
 
 			before /\/collections.*/ do
-				unless session['authenticated']
+				unless session[:authenticated]
 					redirect "/#{settings.base_route}/login"
 				end
 			end
