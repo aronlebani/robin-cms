@@ -9,18 +9,22 @@ module RobinCMS
 
 		def initialize(id, collection_id, fields = {})
 			@id = id
-			@fields = fields.to_h
-			@collection = $cfg.collections.find { |c| c.id == collection_id }
+			@fields = fields
+			@collection = $cfg.collections.find { |c| c.id == collection_id.to_sym }
 
-			@fields['kind'] = collection_id
+			@fields[:kind] = collection_id.to_sym
+		end
+
+		def fields=(fields)
+			@fields = fields.to_h.transform_keys(&:to_sym)
 		end
 
 		def save
 			return if File.exist?(filename)
 
 			timestamp = Time.now.strftime(DATETIME_FORMAT)
-			@fields['created_at'] = timestamp
-			@fields['updated_at'] = timestamp
+			@fields[:created_at] = timestamp
+			@fields[:updated_at] = timestamp
 			File.write(filename, serialize)
 		end
 
@@ -28,7 +32,7 @@ module RobinCMS
 			return unless File.exist?(filename)
 
 			timestamp = Time.now.strftime(DATETIME_FORMAT)
-			@fields['updated_at'] = timestamp
+			@fields[:updated_at] = timestamp
 			File.write(filename, serialize)
 		end
 
@@ -48,7 +52,7 @@ module RobinCMS
 				content = File.read(filename)
 				item = deserialize(id, ext, content)
 
-				return unless item.fields['kind'] == collection_id
+				return unless item.fields[:kind] == collection_id.to_sym
 
 				item
 			end
@@ -63,7 +67,7 @@ module RobinCMS
 					item = deserialize(id, ext, content)
 
 					unless collection_id.nil?
-						next unless item.fields['kind'] == collection_id
+						next unless item.fields[:kind] == collection_id.to_sym
 					end
 
 					item
@@ -71,7 +75,7 @@ module RobinCMS
 			end
 
 			def create(collection_id, fields)
-				id = make_stub(fields['title'])
+				id = make_stub(fields[:title])
 
 				if find(id, collection_id)
 					raise IOError, 'An item with the same name already exists'
@@ -88,14 +92,14 @@ module RobinCMS
 				when '.html'
 					_, frontmatter, content = str.split('---')
 
-					fields = YAML.load(frontmatter)
-					collection_id = fields['kind']
-					fields['content'] = content.strip
+					fields = YAML.load(frontmatter, symbolize_names: true)
+					collection_id = fields[:kind]
+					fields[:content] = content.strip
 
 					new(id, collection_id, fields)
 				when '.yaml'
-					fields = YAML.load(str)
-					collection_id = fields['kind']
+					fields = YAML.load(str, symbolize_names: true)
+					collection_id = fields[:kind]
 
 					new(id, collection_id, fields)
 				end
@@ -115,17 +119,24 @@ module RobinCMS
 
 		def serialize
 			frontmatter = @fields
-			frontmatter.delete('id')
-			frontmatter.delete('c_id')
+			frontmatter.delete(:id)
+			frontmatter.delete(:c_id)
+			frontmatter[:kind] = frontmatter[:kind].to_s
+
+			# The Psych module (for which YAML is an alias) has a
+			# stringify_names option which does exactly this. However it was
+			# only introduced in Ruby 3.4. Using transform_keys is a workaround
+			# to support earlier versions of Ruby.
+			frontmatter = frontmatter.to_h.transform_keys(&:to_s)
 
 			case @collection.filetype
 			when 'html'
-				content = @fields['content']
+				content = frontmatter['content']
 				frontmatter.delete('content')
 
-				YAML.dump(frontmatter.to_h) << "---\n" << content
+				YAML.dump(frontmatter, stringify_names: true) << "---\n" << content
 			when 'yaml'
-				YAML.dump(frontmatter.to_h)
+				YAML.dump(frontmatter, stringify_names: true)
 			end
 		end
 	end

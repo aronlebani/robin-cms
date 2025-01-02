@@ -231,7 +231,7 @@
 						</li>
 						<% for collection in @collections %>
 							<li
-								<% if request.path_info.include?(collection.id) %>
+								<% if request.path_info.include?(collection.id.to_s) %>
 									class="current"
 								<% end %>
 							>

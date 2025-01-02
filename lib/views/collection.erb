@@ -28,14 +28,14 @@
 			<tr>
 				<td>
 					<a href="/<%= settings.base_route %>/collections/<%= @collection.id %>/item?id=<%= item.id %>">
-						<%= item.fields['title'] %>
+						<%= item.fields[:title] %>
 					</a>
 				</td>
 				<td>
-					<%= Time.parse(item.fields['created_at']).strftime('%b %d, %Y') %>
+					<%= Time.parse(item.fields[:created_at]).strftime('%b %d, %Y') %>
 				</td>
 				<td>
-					<%= Time.parse(item.fields['updated_at']).strftime('%b %d, %Y') %>
+					<%= Time.parse(item.fields[:updated_at]).strftime('%b %d, %Y') %>
 				</td>
 				<td class="controls">
 					<a href="/<%= settings.base_route %>/collections/<%= @collection.id %>/item?id=<%= item.id %>">
@@ -45,8 +45,8 @@
 				<td>
 					<%= erb :dialog, locals: {
 						id: "delete#{item.id}",
-						heading: "Delete #{item.fields['title']}?",
-						body: "Are you sure you want to delete #{item.fields['title']}?",
+						heading: "Delete #{item.fields[:title]}?",
+						body: "Are you sure you want to delete #{item.fields[:title]}?",
 						action: "/#{settings.base_route}/collections/#{@collection.id}/item/delete?id=#{item.id}",
 						button_label: 'Delete',
 						danger: true

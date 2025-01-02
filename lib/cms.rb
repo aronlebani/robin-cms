@@ -69,7 +69,7 @@ module RobinCMS
 
 			get '/collections/:c_id' do
 				@collections = $cfg.collections
-				@collection = $cfg.collections.find { |c| c.id == params['c_id'] }
+				@collection = $cfg.collections.find { |c| c.id.to_s == params['c_id'] }
 				@items = Item.all(params['c_id'])
 
 				erb :collection
@@ -77,7 +77,7 @@ module RobinCMS
 
 			get '/collections/:c_id/item' do
 				@collections = $cfg.collections
-				@collection = $cfg.collections.find { |c| c.id == params['c_id'] }
+				@collection = $cfg.collections.find { |c| c.id.to_s == params['c_id'] }
 
 				if params['id']
 					@item = Item.find(params['id'], params['c_id'])
@@ -96,7 +96,7 @@ module RobinCMS
 
 					return 404 unless @item
 
-					@item.fields = params.to_h
+					@item.fields = params
 					@item.update
 				else
 					begin

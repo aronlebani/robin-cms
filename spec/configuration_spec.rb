@@ -10,35 +10,35 @@ describe ConfigurationParser do
 
 		expect(cfg.content_dir).to eq('content')
 		expect(cfg.collections.length).to eq(2)
-		expect(cfg.collections[0].id).to eq('poem')
+		expect(cfg.collections[0].id).to eq(:poem)
 		expect(cfg.collections[0].label).to eq('Poem')
 		expect(cfg.collections[0].location).to eq('/')
 		expect(cfg.collections[0].filetype).to eq('html')
-		expect(cfg.collections[0].fields.find { |f| f.label == 'My title' && f.id == 'title' && f.type == 'input' }).not_to be_nil
-		expect(cfg.collections[0].fields.find { |f| f.label == 'Author' && f.id == 'author_name' && f.type == 'input' }).not_to be_nil
-		expect(cfg.collections[0].fields.find { |f| f.label == 'Content' && f.id == 'content' && f.type == 'richtext' }).not_to be_nil
+		expect(cfg.collections[0].fields.find { |f| f.label == 'My title' && f.id == :title && f.type == 'input' }).not_to be_nil
+		expect(cfg.collections[0].fields.find { |f| f.label == 'Author' && f.id == :author_name && f.type == 'input' }).not_to be_nil
+		expect(cfg.collections[0].fields.find { |f| f.label == 'Content' && f.id == :content && f.type == 'richtext' }).not_to be_nil
 	end
 
 	it 'adds the implicit fields' do
 		cfg = ConfigurationParser.new(File.join(__dir__, 'files/valid.yaml'))
 
-		expect(cfg.collections[1].fields.find { |f| f.id == 'title' }).not_to be_nil
-		expect(cfg.collections[1].fields.find { |f| f.id == 'kind' }).not_to be_nil
-		expect(cfg.collections[1].fields.find { |f| f.id == 'created_at' }).not_to be_nil
-		expect(cfg.collections[1].fields.find { |f| f.id == 'updated_at' }).not_to be_nil
+		expect(cfg.collections[1].fields.find { |f| f.id == :title }).not_to be_nil
+		expect(cfg.collections[1].fields.find { |f| f.id == :kind }).not_to be_nil
+		expect(cfg.collections[1].fields.find { |f| f.id == :created_at }).not_to be_nil
+		expect(cfg.collections[1].fields.find { |f| f.id == :updated_at }).not_to be_nil
 	end
 
 	it 'chooses explicitly added fields over implicitly added fields' do
 		cfg = ConfigurationParser.new(File.join(__dir__, 'files/valid.yaml'))
 
-		expect(cfg.collections[0].fields.filter { |f| f.id == 'title' }.length).to eq(1)
-		expect(cfg.collections[0].fields.find { |f| f.id == 'title' }.label).to eq('My title')
+		expect(cfg.collections[0].fields.filter { |f| f.id == :title }.length).to eq(1)
+		expect(cfg.collections[0].fields.find { |f| f.id == :title }.label).to eq('My title')
 	end
 
 	it 'always puts the title field first' do
 		cfg = ConfigurationParser.new(File.join(__dir__, 'files/valid.yaml'))
 
-		expect(cfg.collections[1].fields[0].id).to eq('title')
+		expect(cfg.collections[1].fields[0].id).to eq(:title)
 	end
 
 	it 'uses the default location if not explicitly set' do
