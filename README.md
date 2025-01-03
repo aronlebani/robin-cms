@@ -41,6 +41,22 @@ headless, flat-file CMS built in Ruby that met my needs. So here we are.
   a `robin.yaml` file
 * Self-contained - you don't need to ship any assets for the CMS admin site
 
+## Limitations
+
+In order to keep the CMS simple to maintain for your website, certain features
+that are commonly found in CMS software have been omitted.
+
+* Only supports a single user, which means you don't need to maintain a user
+  database.
+* Does not support relations between content models. This is the nature of a
+  flat-file CMS. If you need data model relations, you are better of using an
+  SQL database backend rather than a flat-file backend.
+* Doesn't support multiple sites. It is designed to be simple enough that you
+  can drop in a separate instance of the CMS for each website.
+* Does not have a WYSIWYG editor. It is designed purely for managing structured
+  content. You can however add richtext fields to your content models (see
+  example below).
+
 ## Usage
 
 1. Install gem
