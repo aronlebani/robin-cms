@@ -33,7 +33,6 @@
 			<% case field.type
 				 when 'input' %>
 				<input
-					id="<%= field.id %>"
 					name="<%= field.id %>"
 					value="<%= @item.fields[field.id] || field.default %>"
 					<% if field.required %>required<% end %>
@@ -42,7 +41,6 @@
 				/>
 			<% when 'date' %>
 				<input
-					id="<%= field.id %>"
 					name="<%= field.id %>"
 					value="<%= @item.fields[field.id] %>"
 					<% if field.required %>required<% end %>
@@ -85,7 +83,12 @@
 					</span>
 				</div>
 				<div id="editor"><%= @item.fields[:content] %></div>
-				<input id="<%= field.id %>" type="hidden" name="<%= field.id %>" value="" />
+				<input
+					id="richtext-content"
+					type="hidden"
+					name="<%= field.id %>"
+					value=""
+				/>
 			<% else %>
 				<div></div>
 			<% end %>
@@ -100,9 +103,7 @@
 
 <script>
 	const form = document.getElementById("item-form")
-	// TODO - this shouldn't be hard-coded as 'content' because the richtext
-	// field may not be named 'content'
-	const input = document.getElementById("content")
+	const input = document.getElementById("richtext-content")
 
 	const quill = new Quill("#editor", {
 		modules: {
