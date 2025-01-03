@@ -82,4 +82,10 @@ describe ConfigurationParser do
 			ConfigurationParser.new(File.join(__dir__, 'files/missing_required_collection_attr.yaml'))
 		end.to raise_error(ParseError)
 	end
+
+	it 'complains if multiple richtext fields are added in one collection' do
+		expect do
+			ConfigurationParser.new(File.join(__dir__, 'files/multiple_richtext.yaml'))
+		end.to raise_error(ParseError)
+	end
 end

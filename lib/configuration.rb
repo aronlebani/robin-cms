@@ -32,6 +32,10 @@ module RobinCMS
 				raise ParseError, "Missing one or more required attributes #{REQUIRED_ATTRS.join(', ')} for collection #{config[:name]}"
 			end
 
+			if config[:fields].filter { |f| f[:type] == 'richtext' }.length > 1
+				raise ParseError, 'Only one richtext field per collection is permitted'
+			end
+
 			@id = config[:name].to_sym
 			@label = config[:label]
 			@location = config[:location] || '/'
