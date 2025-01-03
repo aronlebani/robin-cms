@@ -1,14 +1,56 @@
+# The name of your website. Appears in the header of the admin page.
 site_name: "Robin CMS"
+
+# This is the directory where the content files are stored.
 content_dir: "cms_content"
+
+# The username for the CMS admin portal user.
 admin_username: "admin"
+
+# The password for the CMS admin portal user.
 admin_password: "admin"
+
+# The command used to build the site (if using a SSG). This allows you to
+# rebuild the site from within the admin portal using the "publish" button. The
+# publish button will not be shown if this field is omitted.
 build_command: "nanoc compile"
+
+# The base route to mount the CMS admin portal.
 base_route: "cms"
+
+# Accent colour is used to highlight certain elements in the admin portal. You
+# can set this to match the theme of the website.
 accent_color: "#4493f8"
+
+# A list of collections, defining the content model of your CMS.
 collections:
-  - name: "poem"
+  - # A unique name identifying this collection.
+    name: "poem"
+    # A human-readable name for this collection.
     label: "Poem"
+    # The location within `content_dir` to store files of this collection. If
+    # omitted, it will default to "/".
+    location: "/poems"
+    # The collection filetype. Can be either "html" or "yaml". If omitted, it
+    # will default to "html".
+    filetype: "html"
+    # A list of fields for the collection. Note that `title`, `created_at`, and
+    # `updated_at` fields are automatically added. However if you explicitly
+    # add them here, it won't be a problem. Each field has the following
+    # mandatory fields:
+    #
+    # - label: human-readable label for the field
+    # - name: unique name identifying the field
+    # - type: the field type - can be one of "input", "richtext", "date"
+    #
+    # And may have any of the following optional fields:
+    #
+    # - default: supply a default value for the field
+    # - required: make the field required when set to `true`
+    # - hidden: make the field hidden when set to `true`
+    # - readonly: make the field readonly when set to `true`
     fields:
+      - { label: "Title", name: "title", type: "input" }
       - { label: "Author", name: "author_name", type: "input" }
       - { label: "Content", name: "content", type: "richtext" }
   - name: "book"

@@ -3,10 +3,11 @@
 ![Robin CMS logo](./assets/robin-logo.png)
 
 Robin CMS is a minimalist flat-file CMS built with Ruby and Sinatra. It is
-designed to be used by developers for creating websites where the client needs
-to be able to update content themselves. It works with any Static Site
-Generator and can also be embedded in a dynamic Sinatra app. The idea is you
-can just drop it into your project and have a customised CMS for each website.
+designed to be used by developers for creating custom built websites where the
+client needs to be able to update content themselves. It works with any Static
+Site Generator and can also be embedded in a dynamic Sinatra app. The idea is
+that you can just drop it into your project and have a completely customised
+CMS for each website.
 
 It is completely headless - it gives clients an admin interface where they can
 manage raw content, while giving the developer full control over the HTML and
@@ -26,7 +27,7 @@ configuration file.
 
 I know, I know. Another CMS. Whilst there seems to be a plethora of options in
 PHP and JavaScript, there aren't many options for Ruby. Most of them are big
-Rails monoliths, designed either to be a full end-to-end CMS like Wordpress or
+Rails monoliths, designed either to be a full end-to-end CMS like Wordpress, or
 for the specific use-case of building a blog. I couldn't find a simple
 headless, flat-file CMS built in Ruby that met my needs. So here we are.
 
@@ -38,6 +39,7 @@ headless, flat-file CMS built in Ruby that met my needs. So here we are.
 * Works with any Static Site Generator or with a dynamic Sinatra app
 * Simple to install into your website - you just need to add a `config.ru` and
   a `robin.yaml` file
+* Self-contained - you don't need to ship any assets for the CMS admin site
 
 ## Usage
 
@@ -105,7 +107,9 @@ the server. It is reccommended to create one via Ruby's SecureRandom package.
 ruby -e "require 'securerandom'; puts SecureRandom.hex(64)"
 ```
 
-See the [example](./example) folder for a full example.
+See the [example](./example) folder for a full example. I haven't written any
+documentation yet, but the example `robin.yaml` file is thoroughly commented to
+explain each of the fields.
 
 ## Testing
 

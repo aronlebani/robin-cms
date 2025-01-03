@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.authors = ["Aron Lebani"]
   spec.email = ["aron@lebani.dev"]
 
-  spec.summary = "A tiny CMS based on Sinatra."
+  spec.summary = "A minimalist, headless flat-file CMS based on Sinatra."
   spec.homepage = "https://github.com/aronlebani/robin-cms.git"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 3.0.0"
