@@ -48,7 +48,8 @@ module RobinCMS
 			post '/login' do
 				unless authenticated?(params[:username], params[:password])
 					@error = 'Incorrect username or password'
-					erb :login
+					@auth_layout = true
+					return erb :login
 				end
 
 				session[:authenticated] = true

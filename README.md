@@ -98,7 +98,11 @@ collections:
 That's it. Now run `rackup`, and go to `http://localhost:9292` in your browser.
 You can log in with username "admin" and password "admin".
 
-You'll need to expose a `SESSION_SECRET` environment variable too. If you
+The admin username and password can be set (in order of priority) either by the
+environment variables `ADMIN_USER` and `ADMIN_PASS`, or in the `robin.yaml`
+config.
+
+You'll also need to expose a `SESSION_SECRET` environment variable. If you
 don't, it will create one for you, but it creates a new secret each time
 the server starts, meaning you will have to log in again whenever you restart
 the server. It is reccommended to create one via Ruby's SecureRandom package.

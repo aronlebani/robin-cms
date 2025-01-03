@@ -86,8 +86,8 @@ module RobinCMS
 
 			@site_name = config[:site_name] || 'RobinCMS'
 			@content_dir = config[:content_dir] || 'content'
-			@admin_username = config[:admin_username] || 'admin'
-			@admin_password = config[:admin_password] || 'admin'
+			@admin_username = ENV['ADMIN_USER'] || config[:admin_username] || 'admin'
+			@admin_password = ENV['ADMIN_PASS'] || config[:admin_password] || 'admin'
 			@build_command = config[:build_command] || nil
 			@base_route = config[:base_route] || 'cms'
 			@accent_color = config[:accent_color] || '#4493f8'
