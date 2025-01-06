@@ -17,8 +17,8 @@ admin_password: "admin"
 # publish button will not be shown if this field is omitted.
 build_command: "nanoc compile"
 
-# The base route to mount the CMS admin portal.
-base_route: "cms"
+# The base route to mount the CMS admin portal. Defaults to "admin".
+base_route: "admin"
 
 # Accent colour is used to highlight certain elements in the admin portal. You
 # can set this to match the theme of the website.
