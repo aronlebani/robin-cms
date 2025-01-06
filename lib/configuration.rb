@@ -4,7 +4,10 @@ require 'yaml'
 
 module RobinCMS
 	class ParseError < StandardError
-		def initialize(msg = 'Error parsing configuration')
+		DEFAULT_MSG = 'Error parsing configuration.'
+
+		def initialize(msg = nil)
+			msg = if msg then "#{DEFAULT_MSG} #{msg}" else DEFUALT_MSG end
 			super(msg)
 		end
 	end
@@ -21,25 +24,28 @@ module RobinCMS
 			{ :label => 'Last edited', :name => 'updated_at', :type => 'date', :hidden => true }
 		].freeze
 
-		attr_reader :id, :label, :location, :filetype, :fields
+		attr_reader :id, :label, :label_singular, :location, :filetype,
+			:description, :fields
 
 		def initialize(config)
 			unless ALLOWED_FILETYPES.include?(config[:filetype])
-				raise ParseError, "Invalid filetype #{config[:filetype]}"
+				raise ParseError, "Invalid filetype #{config[:filetype]}."
 			end
 
 			unless REQUIRED_ATTRS.all? { |attr| config.keys.include?(attr) }
-				raise ParseError, "Missing one or more required attributes #{REQUIRED_ATTRS.join(', ')} for collection #{config[:name]}"
+				raise ParseError, "Collection missing one or more required attributes #{REQUIRED_ATTRS.join(', ')} for collection #{config[:name]}."
 			end
 
 			if config[:fields].filter { |f| f[:type] == 'richtext' }.length > 1
-				raise ParseError, 'Only one richtext field per collection is permitted'
+				raise ParseError, 'Only one richtext field per collection is permitted.'
 			end
 
 			@id = config[:name].to_sym
 			@label = config[:label]
+			@label_singular = config[:label_singular] || config[:label]
 			@location = config[:location] || '/'
 			@filetype = config[:filetype] || 'html'
+			@description = config[:description]
 			@fields = (config[:fields] || [])
 				.concat(IMPLICIT_FIELDS)
 				.uniq { |f| f[:name] }
@@ -58,11 +64,11 @@ module RobinCMS
 
 		def initialize(config)
 			unless ALLOWED_TYPES.include?(config[:type])
-				raise ParseError, "Invalid type #{config[:type]}"
+				raise ParseError, "Invalid field type #{config[:type]}."
 			end
 
 			unless REQUIRED_ATTRS.all? { |attr| config.keys.include?(attr) }
-				raise ParseError, "Missing one or more required attributes #{REQUIRED_ATTRS.join(', ')} for field #{config[:name]}"
+				raise ParseError, "Field missing one or more required attributes #{REQUIRED_ATTRS.join(', ')} for field #{config[:name]}."
 			end
 
 			@id = config[:name].to_sym
@@ -85,7 +91,7 @@ module RobinCMS
 			config = YAML.load_file(filename, symbolize_names: true)
 
 			if !config[:collections] || config[:collections].length == 0
-				raise ParseError, "At least one collection is required"
+				raise ParseError, "At least one collection is required."
 			end
 
 			@site_name = config[:site_name] || 'RobinCMS'

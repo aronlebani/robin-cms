@@ -11,9 +11,12 @@
 		<% end %>
 	</span>
 </header>
+<% if @collection.description %>
+	<p id="collection-description"><%= @collection.description %></p>
+<% end %>
 <% if @items.length == 0 %>
 	<p id="no-items">
-		Nothing to show. Create a <a href="/<%= settings.base_route %>/collections/<%= @collection.id %>/item">new <%= @collection.label %></a>.
+		Nothing to show. Create a <a href="/<%= settings.base_route %>/collections/<%= @collection.id %>/item">new <%= @collection.label_singular %></a>.
 	</p>
 <% else %>
 	<table>

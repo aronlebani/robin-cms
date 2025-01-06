@@ -1,7 +1,9 @@
 # The name of your website. Appears in the header of the admin page.
 site_name: "Robin CMS"
 
-# This is the directory where the content files are stored.
+# This is the directory where the content files are stored. Tip: keep this
+# separate from the version controlled content directory, and put it in your
+# .gitignore.
 content_dir: "cms_content"
 
 # The username for the CMS admin portal user.
@@ -26,14 +28,20 @@ accent_color: "#4493f8"
 collections:
   - # A unique name identifying this collection.
     name: "poem"
-    # A human-readable name for this collection.
-    label: "Poem"
+    # A human-readable name for this collection. It should be a plural.
+    label: "Poems"
+    # A human-readable name for this collection - singular version. Defaults to
+    # label.
+    label_singular: "Poem"
     # The location within `content_dir` to store files of this collection. If
     # omitted, it will default to "/".
     location: "/poems"
     # The collection filetype. Can be either "html" or "yaml". If omitted, it
     # will default to "html".
     filetype: "html"
+    # Description for each collection. Appears in the admin portal on the
+    # page for the relevant collection.
+    description: "A collection of lovely poems about programming."
     # A list of fields for the collection. Note that `title`, `created_at`, and
     # `updated_at` fields are automatically added. However if you explicitly
     # add them here, it won't be a problem. Each field has the following
@@ -54,14 +62,18 @@ collections:
       - { label: "Author", name: "author_name", type: "input" }
       - { label: "Content", name: "content", type: "richtext" }
   - name: "book"
-    label: "Book"
+    label: "Books"
+    label_singular: "Book"
     filetype: "yaml"
+    description: "A list of books."
     fields:
       - { label: "Author", name: "author_name", type: "input" }
   - name: "record"
-    label: "Record"
+    label: "Records"
+    label_singular: "Record"
     location: "/records"
     filetype: "yaml"
+    description: "A list of records."
     fields:
       - { label: "Artist", name: "artist", type: "input" }
       - { label: "Genre", name: "genre", type: "input" }

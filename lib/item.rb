@@ -77,6 +77,8 @@ module RobinCMS
 			def create(collection_id, fields)
 				id = make_stub(fields[:title])
 
+				# TODO - this should be in the save function so that it works
+				# for both
 				if find(id, collection_id)
 					raise IOError, 'An item with the same name already exists'
 				end
