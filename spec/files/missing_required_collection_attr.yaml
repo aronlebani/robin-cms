@@ -4,4 +4,4 @@ collections:
     location: "/"
     filetype: "html"
     fields:
-      - { label: "Title", name: "title", type: "input" }
+      - { label: "Title", name: "title", type: "text" }

@@ -5,28 +5,28 @@ collections:
     location: "/"
     filetype: "html"
     fields:
-      - { label: "Title", name: "title", type: "input" }
-      - { label: "Author", name: "author_name", type: "input" }
+      - { label: "Title", name: "title", type: "text" }
+      - { label: "Author", name: "author_name", type: "text" }
       - { label: "Content", name: "content", type: "richtext" }
   - name: "article"
     label: "Article"
     location: "/"
     filetype: "html"
     fields:
-      - { label: "Title", name: "title", type: "input" }
-      - { label: "Author", name: "author_name", type: "input" }
+      - { label: "Title", name: "title", type: "text" }
+      - { label: "Author", name: "author_name", type: "text" }
       - { label: "Content", name: "content", type: "richtext" }
   - name: "song"
     label: "Song"
     location: "/"
     filetype: "yaml"
     fields:
-      - { label: "Title", name: "title", type: "input" }
-      - { label: "Artist", name: "artist_name", type: "input" }
+      - { label: "Title", name: "title", type: "text" }
+      - { label: "Artist", name: "artist_name", type: "text" }
   - name: "artist"
     label: "Artist"
     location: "/artists"
     filetype: "yaml"
     fields:
-      - { label: "Title", name: "title", type: "input" }
-      - { label: "From", name: "from", type: "input" }
+      - { label: "Title", name: "title", type: "text" }
+      - { label: "From", name: "from", type: "text" }

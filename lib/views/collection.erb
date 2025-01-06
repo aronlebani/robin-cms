@@ -16,6 +16,37 @@
 <% if @collection.description %>
 	<p id="collection-description"><%= @collection.description %></p>
 <% end %>
+<form id="filters-form" class="controls --right" action="" method="get">
+	<label class="--horizontal" for="sort">Sort</label>
+	<select id="sort" name="sort">
+		<% for option in RobinCMS::Item::SORT_OPTIONS %>
+			<option
+				value="<%= option[:value] %>"
+				<% if query_params['sort'] == option[:value] %>
+					selected
+				<% end %>
+			>
+				<%= option[:label] %>
+			</option>
+		<% end %>
+	</select>
+	<label class="--horizontal" for="status">Status</label>
+	<select id="status" name="status">
+		<% for option in RobinCMS::Item::STATUS_OPTIONS%>
+			<option
+				value="<%= option[:value] %>"
+				<% if query_params['status'] == option[:value] %>
+					selected
+				<% end %>
+			>
+				<%= option[:label] %>
+			</option>
+		<% end %>
+	</select>
+	<label class="--horizontal" for="search">Search</label>
+	<input id="search" name="q" type="search" value="<%= query_params['q'] %>" />
+	<button type="submit">Apply</button>
+</form>
 <% if @items.length == 0 %>
 	<p id="no-items">
 		Nothing to show.

@@ -7,6 +7,7 @@ require 'sinatra/flash'
 require 'sinatra/namespace'
 
 require_relative 'item'
+require_relative 'helpers'
 require_relative 'version'
 require_relative 'configuration'
 
@@ -32,6 +33,8 @@ module RobinCMS
 
 		namespace "/#{settings.base_route}" do
 			helpers do
+				include RobinCMS::Helpers
+
 				def authenticated?(username, guess)
 					return false unless username == settings.admin_user
 
@@ -70,7 +73,12 @@ module RobinCMS
 			get '/collections/:c_id' do
 				@collections = $cfg.collections
 				@collection = $cfg.collections.find { |c| c.id.to_s == params[:c_id] }
-				@items = Item.all(params[:c_id])
+				@items = Item.where(
+					collection_id: params[:c_id],
+					sort: params[:sort],
+					status: params[:status],
+					q: params[:q]
+				)
 
 				erb :collection
 			end

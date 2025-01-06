@@ -210,7 +210,7 @@ describe Item do
 			---
 			<p>This is a poem about <i>Haskell</i>.</p>
 		HTML
-		items = Item.all(:poem)
+		items = Item.where(collection_id: :poem)
 
 		expect(items.length).to eq(2)
 	end
@@ -236,10 +236,12 @@ describe Item do
 			---
 			<p>This is an article about <i>Ruby</i>.</p>
 		HTML
-		items = Item.all(:poem)
+		items = Item.where(collection_id: :poem)
 
 		expect(items.length).to eq(1)
 	end
+
+	# TODO - tests for sort, status, q
 
 	it 'returns an empty array if no items of a given collection are found' do
 		File.write(File.join(__dir__, 'tmp', 'a-poem-about-ruby.html'), <<~HTML)
@@ -252,7 +254,7 @@ describe Item do
 			---
 			<p>This is a poem about <i>Ruby</i>.</p>
 		HTML
-		items = Item.all(:article)
+		items = Item.where(collection_id: :article)
 
 		expect(items.length).to eq(0)
 	end

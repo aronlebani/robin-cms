@@ -5,13 +5,13 @@ collections:
     location: "/"
     filetype: "html"
     fields:
-      - { label: "My title", name: "title", type: "input" }
-      - { label: "Author", name: "author_name", type: "input" }
+      - { label: "My title", name: "title", type: "text" }
+      - { label: "Author", name: "author_name", type: "text" }
       - { label: "Content", name: "content", type: "richtext" }
   - name: "song"
     label: "Song"
     location: "/songs"
     filetype: "yaml"
     fields:
-      - { label: "Artist", name: "artist", type: "input" }
-      - { label: "Genre", name: "genre", type: "input" }
+      - { label: "Artist", name: "artist", type: "text" }
+      - { label: "Genre", name: "genre", type: "text" }

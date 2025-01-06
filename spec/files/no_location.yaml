@@ -4,4 +4,4 @@ collections:
     label: "Poem"
     filetype: "html"
     fields:
-      - { label: "Author", name: "author_name", type: "input" }
+      - { label: "Author", name: "author_name", type: "text" }

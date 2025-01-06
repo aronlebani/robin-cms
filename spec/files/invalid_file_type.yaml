@@ -5,4 +5,4 @@ collections:
     location: "/"
     filetype: "mp3"
     fields:
-      - { label: "Author", name: "author_name", type: "input" }
+      - { label: "Author", name: "author_name", type: "text" }

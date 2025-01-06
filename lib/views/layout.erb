@@ -111,6 +111,11 @@
 				margin-bottom: var(--spacer);
 			}
 
+			label.--horizontal {
+				display: inline;
+				margin-bottom: 0;
+			}
+
 			input {
 				border: 1px solid var(--border-color);
 				border-radius: var(--border-radius);
@@ -118,6 +123,18 @@
 				max-width: 30rem;
 				box-sizing: border-box;
 				padding: var(--spacer);
+			}
+
+			select {
+				border: 1px solid var(--border-color);
+				border-radius: var(--border-radius);
+				box-sizing: border-box;
+				padding: var(--spacer);
+				background-color: #fff;
+			}
+
+			input[type="search"] {
+				width: initial;
 			}
 
 			fieldset {
@@ -212,9 +229,18 @@
 				flex: 1 1 50%;
 			}
 
+			#filters-form {
+				background-color: var(--bg-color);
+				padding: var(--spacer);
+			}
+
 			.controls {
 				display: flex;
 				align-items: center;
+			}
+
+			.controls.--right {
+				justify-content: flex-end;
 			}
 
 			.controls > *:not(:first-child):not(dialog) {
@@ -254,7 +280,7 @@
 				<nav>
 					<ul>
 						<li
-							<% if request.path_info.split('/').last == 'collections' %>
+							<% if current_collection == 'collections' %>
 								class="current"
 							<% end %>
 						>
@@ -262,7 +288,7 @@
 						</li>
 						<% for collection in @collections %>
 							<li
-								<% if request.path_info.include?(collection.id.to_s) %>
+								<% if current_collection == collection.id.to_s %>
 									class="current"
 								<% end %>
 							>

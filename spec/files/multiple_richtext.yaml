@@ -5,6 +5,6 @@ collections:
     location: "/"
     filetype: "html"
     fields:
-      - { label: "Title", name: "title", type: "input" }
+      - { label: "Title", name: "title", type: "text" }
       - { label: "Content 1", name: "content1", type: "richtext" }
       - { label: "Content 2", name: "content2", type: "richtext" }

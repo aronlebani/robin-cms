@@ -4,6 +4,37 @@ module RobinCMS
 	class Item
 		DATETIME_FORMAT = '%Y-%m-%d'
 
+		SORT_OPTIONS = [{
+			:label => 'Name (a-z)',
+			:value => 'id'
+		}, {
+			:label => 'Name (z-a)',
+			:value => '-id'
+		}, {
+			:label => 'Created date (newest - oldest)',
+			:value => 'created_at'
+		}, {
+			:label => 'Created date (oldest - newest)',
+			:value => '-created_at'
+		}, {
+			:label => 'Updated date (newest - oldest)',
+			:value => 'updated_at'
+		}, {
+			:label => 'Updated date (oldest - newest)',
+			:value => '-updated_at'
+		}].freeze
+
+		STATUS_OPTIONS = [{
+			:label => 'Any',
+			:value => ''
+		}, {
+			:label => 'Draft',
+			:value => 'draft'
+		}, {
+			:label => 'Published',
+			:value => 'published'
+		}].freeze
+
 		attr_accessor :fields
 		attr_reader :id, :collection
 
@@ -57,21 +88,50 @@ module RobinCMS
 				item
 			end
 
-			def all(collection_id = nil)
+			def all
 				Dir.glob(File.join($cfg.content_dir, '**/*')).map do |f|
 					next unless File.file?(f)
 
 					id = File.basename(f, '.*')
 					ext = File.extname(f)
 					content = File.read(f)
-					item = deserialize(id, ext, content)
-
-					unless collection_id.nil?
-						next unless item.fields[:kind] == collection_id.to_sym
-					end
-
-					item
+					deserialize(id, ext, content)
 				end.compact
+			end
+
+			def where(collection_id: nil, sort: 'id', status: nil, q: '')
+				# Handles the case where nil is explicitly passed
+				sort ||= 'id'
+				q ||= ''
+
+				sort_by = sort.sub('-', '').to_sym
+				sort_direction = sort.start_with?('-') ? -1 : 1
+				re = Regexp.new(q, 'i')
+
+				# TODO - status
+
+				by_collection = lambda do |i|
+					return true if collection_id.nil?
+
+					i.fields[:kind] == collection_id.to_sym
+				end
+
+				by_search = lambda do |i|
+					return true if q.nil?
+
+					i.fields[:title].match?(re)
+				end
+
+				by_field = lambda do |a, b|
+					case sort_by
+					when :id
+						a.id <=> b.id
+					when :created_at, :updated_at
+						b.fields[sort_by] <=> a.fields[sort_by]
+					end * sort_direction
+				end
+
+				all.filter(&by_collection).filter(&by_search).sort(&by_field)
 			end
 
 			def create(collection_id, fields)

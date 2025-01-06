@@ -14,8 +14,8 @@ describe ConfigurationParser do
 		expect(cfg.collections[0].label).to eq('Poem')
 		expect(cfg.collections[0].location).to eq('/')
 		expect(cfg.collections[0].filetype).to eq('html')
-		expect(cfg.collections[0].fields.find { |f| f.label == 'My title' && f.id == :title && f.type == 'input' }).not_to be_nil
-		expect(cfg.collections[0].fields.find { |f| f.label == 'Author' && f.id == :author_name && f.type == 'input' }).not_to be_nil
+		expect(cfg.collections[0].fields.find { |f| f.label == 'My title' && f.id == :title && f.type == 'text' }).not_to be_nil
+		expect(cfg.collections[0].fields.find { |f| f.label == 'Author' && f.id == :author_name && f.type == 'text' }).not_to be_nil
 		expect(cfg.collections[0].fields.find { |f| f.label == 'Content' && f.id == :content && f.type == 'richtext' }).not_to be_nil
 	end
 

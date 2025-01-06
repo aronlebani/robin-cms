@@ -32,6 +32,7 @@
 			<% end %>
 			<% if ['text', 'date', 'number', 'hidden', 'color', 'email', 'url'].include?(field.type) %>
 				<input
+					<%# TODO - need to add an id here for the label %>
 					type="<%= field.type %>"
 					name="<%= field.id %>"
 					value="<%= @item.fields[field.id] || field.default %>"
