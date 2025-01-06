@@ -27,9 +27,11 @@
 				</a>
 			</td>
 			<td>
-				<a href="/<%= settings.base_route %>/collections/<%= collection.id %>/item">
-					New <%= collection.label_singular %>
-				</a>
+				<% if collection.can_create %>
+					<a href="/<%= settings.base_route %>/collections/<%= collection.id %>/item">
+						New <%= collection.label_singular %>
+					</a>
+				<% end %>
 			</td>
 		</tr>
 	<% end %>

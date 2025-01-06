@@ -1,9 +1,11 @@
 <header class="secondary">
 	<h2><%= @collection.label %></h2>
 	<span class="controls">
-		<a href="/<%= settings.base_route %>/collections/<%= @collection.id %>/item">
-			New <%= @collection.id %>
-		</a>
+		<% if @collection.can_create %>
+			<a href="/<%= settings.base_route %>/collections/<%= @collection.id %>/item">
+				New <%= @collection.id %>
+			</a>
+		<% end %>
 		<% if settings.build_command %>
 			<form id="publish-form" action="/<%= settings.base_route %>/publish" method="post">
 				<button type="submit" form="publish-form">Publish site</button>
@@ -16,7 +18,10 @@
 <% end %>
 <% if @items.length == 0 %>
 	<p id="no-items">
-		Nothing to show. Create a <a href="/<%= settings.base_route %>/collections/<%= @collection.id %>/item">new <%= @collection.label_singular %></a>.
+		Nothing to show.
+		<% if @collection.can_create %>
+			Create a <a href="/<%= settings.base_route %>/collections/<%= @collection.id %>/item">new <%= @collection.label_singular %></a>.
+		<% end %>
 	</p>
 <% else %>
 	<table>
@@ -46,14 +51,16 @@
 					</a>
 				</td>
 				<td>
-					<%= erb :dialog, locals: {
-						id: "delete#{item.id}",
-						heading: "Delete #{item.fields[:title]}?",
-						body: "Are you sure you want to delete #{item.fields[:title]}?",
-						action: "/#{settings.base_route}/collections/#{@collection.id}/item/delete?id=#{item.id}",
-						button_label: 'Delete',
-						danger: true
-					} %>
+					<% if @collection.can_delete %>
+						<%= erb :dialog, locals: {
+							id: "delete#{item.id}",
+							heading: "Delete #{item.fields[:title]}?",
+							body: "Are you sure you want to delete #{item.fields[:title]}?",
+							action: "/#{settings.base_route}/collections/#{@collection.id}/item/delete?id=#{item.id}",
+							button_label: 'Delete',
+							danger: true
+						} %>
+					<% end %>
 				</td>
 			</tr>
 		<% end %>

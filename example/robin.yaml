@@ -42,6 +42,10 @@ collections:
     # Description for each collection. Appears in the admin portal on the
     # page for the relevant collection.
     description: "A collection of lovely poems about programming."
+    # Allow the user to delete collection items? Defaults to true.
+    can_delete: true
+    # Allow the user to create new collection items? Defaults to true.
+    can_create: true
     # A list of fields for the collection. Note that `title`, `created_at`, and
     # `updated_at` fields are automatically added. However if you explicitly
     # add them here, it won't be a problem. Each field has the following

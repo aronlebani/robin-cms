@@ -54,7 +54,7 @@ module RobinCMS
 		].freeze
 
 		attr_reader :id, :label, :label_singular, :location, :filetype,
-			:description, :fields
+			:description, :can_delete, :can_create, :fields
 
 		def initialize(config)
 			unless ALLOWED_FILETYPES.include?(config[:filetype])
@@ -75,6 +75,8 @@ module RobinCMS
 			@location = config[:location] || '/'
 			@filetype = config[:filetype] || 'html'
 			@description = config[:description]
+			@can_create = config[:can_create].nil? ? true : config[:can_create]
+			@can_delete = config[:can_delete].nil? ? true : config[:can_delete]
 			@fields = (config[:fields] || [])
 				.concat(IMPLICIT_FIELDS)
 				.uniq { |f| f[:name] }

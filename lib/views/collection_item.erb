@@ -4,7 +4,7 @@
 	<h2><%= @item.id ? 'Edit' : 'New' %> <%= @collection.id %></h2>
 	<span class="controls">
 		<a href="/<%= settings.base_route %>/collections/<%= @collection.id %>">Back</a>
-		<% if @item.id %>
+		<% if @collection.can_delete && @item.id %>
 			<%= erb :dialog, locals: {
 				id: "delete#{@item.id}",
 				heading: "Delete #{@item.fields[:title]}?",
