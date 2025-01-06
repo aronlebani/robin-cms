@@ -27,7 +27,7 @@
 >
 	<% for field in @collection.fields %>
 		<div class="field">
-			<% unless field.hidden %>
+			<% unless field.type == 'hidden' %>
 				<label for="<%= field.id %>"><%= field.label %></label>
 			<% end %>
 			<% case field.type
@@ -37,15 +37,22 @@
 					value="<%= @item.fields[field.id] || field.default %>"
 					<% if field.required %>required<% end %>
 					<% if field.readonly %>readonly<% end %>
-					<% if field.hidden %>type="hidden"<% end %>
 				/>
 			<% when 'date' %>
 				<input
+					type="date"
 					name="<%= field.id %>"
-					value="<%= @item.fields[field.id] %>"
+					value="<%= @item.fields[field.id] || field.default %>"
 					<% if field.required %>required<% end %>
 					<% if field.readonly %>readonly<% end %>
-					<% if field.hidden %>type="hidden"<% else %>type="date"<% end %>
+				/>
+			<% when 'hidden' %>
+				<input
+					type="hidden"
+					name="<%= field.id %>"
+					value="<%= @item.fields[field.id] || field.default %>"
+					<% if field.required %>required<% end %>
+					<% if field.readonly %>readonly<% end %>
 				/>
 			<% when 'richtext' %>
 				<div id="toolbar">

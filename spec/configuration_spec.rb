@@ -88,4 +88,8 @@ describe ConfigurationParser do
 			ConfigurationParser.new(File.join(__dir__, 'files/multiple_richtext.yaml'))
 		end.to raise_error(ParseError)
 	end
+
+	it 'defaults to label if no label_singular provided' do
+		# TODO
+	end
 end

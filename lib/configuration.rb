@@ -19,9 +19,9 @@ module RobinCMS
 		REQUIRED_ATTRS = [:name, :label].freeze
 		IMPLICIT_FIELDS = [
 			{ :label => 'Title', :name => 'title', :type => 'input' },
-			{ :label => 'Collection', :name => 'kind', :type => 'input', :hidden => true },
-			{ :label => 'Published date', :name => 'created_at', :type => 'date', :hidden => true },
-			{ :label => 'Last edited', :name => 'updated_at', :type => 'date', :hidden => true }
+			{ :label => 'Collection', :name => 'kind', :type => 'hidden' },
+			{ :label => 'Published date', :name => 'created_at', :type => 'hidden' },
+			{ :label => 'Last edited', :name => 'updated_at', :type => 'hidden' }
 		].freeze
 
 		attr_reader :id, :label, :label_singular, :location, :filetype,
@@ -57,10 +57,10 @@ module RobinCMS
 	class FieldParser
 		include RobinCMS
 
-		ALLOWED_TYPES = ['input', 'richtext', 'date'].freeze
+		ALLOWED_TYPES = ['input', 'richtext', 'date', 'hidden'].freeze
 		REQUIRED_ATTRS = [:name, :label, :type].freeze
 
-		attr_reader :id, :label, :type, :default, :required, :hidden, :readonly
+		attr_reader :id, :label, :type, :default, :required, :readonly
 
 		def initialize(config)
 			unless ALLOWED_TYPES.include?(config[:type])
@@ -76,7 +76,6 @@ module RobinCMS
 			@type = config[:type]
 			@default = config[:default] || ''
 			@required = config[:required] || false
-			@hidden = config[:hidden] || false
 			@readonly = config[:readonly] || false
 		end
 	end
