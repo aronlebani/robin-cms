@@ -12,13 +12,42 @@ module RobinCMS
 		end
 	end
 
+	class FieldParser
+		include RobinCMS
+
+		ALLOWED_TYPES = [
+			'text', 'richtext', 'date', 'hidden', 'number', 'color', 'email',
+			'url'
+		].freeze
+		REQUIRED_ATTRS = [:name, :label, :type].freeze
+
+		attr_reader :id, :label, :type, :default, :required, :readonly
+
+		def initialize(config)
+			unless ALLOWED_TYPES.include?(config[:type])
+				raise ParseError, "Invalid field type #{config[:type]}."
+			end
+
+			unless REQUIRED_ATTRS.all? { |attr| config.keys.include?(attr) }
+				raise ParseError, "Field missing one or more required attributes #{REQUIRED_ATTRS.join(', ')} for field #{config[:name]}."
+			end
+
+			@id = config[:name].to_sym
+			@label = config[:label]
+			@type = config[:type]
+			@default = config[:default] || ''
+			@required = config[:required] || false
+			@readonly = config[:readonly] || false
+		end
+	end
+
 	class CollectionParser
 		include RobinCMS
 
 		ALLOWED_FILETYPES = ['html', 'yaml', nil].freeze
 		REQUIRED_ATTRS = [:name, :label].freeze
 		IMPLICIT_FIELDS = [
-			{ :label => 'Title', :name => 'title', :type => 'input' },
+			{ :label => 'Title', :name => 'title', :type => 'text' },
 			{ :label => 'Collection', :name => 'kind', :type => 'hidden' },
 			{ :label => 'Published date', :name => 'created_at', :type => 'hidden' },
 			{ :label => 'Last edited', :name => 'updated_at', :type => 'hidden' }
@@ -51,32 +80,6 @@ module RobinCMS
 				.uniq { |f| f[:name] }
 				.sort { |fa, fb| fa[:name] == 'title' ? -1 : fb[:name] == 'title' ? 1 : 0 }
 				.map { |f| FieldParser.new(f) }
-		end
-	end
-
-	class FieldParser
-		include RobinCMS
-
-		ALLOWED_TYPES = ['input', 'richtext', 'date', 'hidden'].freeze
-		REQUIRED_ATTRS = [:name, :label, :type].freeze
-
-		attr_reader :id, :label, :type, :default, :required, :readonly
-
-		def initialize(config)
-			unless ALLOWED_TYPES.include?(config[:type])
-				raise ParseError, "Invalid field type #{config[:type]}."
-			end
-
-			unless REQUIRED_ATTRS.all? { |attr| config.keys.include?(attr) }
-				raise ParseError, "Field missing one or more required attributes #{REQUIRED_ATTRS.join(', ')} for field #{config[:name]}."
-			end
-
-			@id = config[:name].to_sym
-			@label = config[:label]
-			@type = config[:type]
-			@default = config[:default] || ''
-			@required = config[:required] || false
-			@readonly = config[:readonly] || false
 		end
 	end
 

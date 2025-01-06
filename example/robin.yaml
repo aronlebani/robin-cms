@@ -35,7 +35,7 @@ collections:
     label_singular: "Poem"
     # The location within `content_dir` to store files of this collection. If
     # omitted, it will default to "/".
-    location: "/poems"
+    location: "/"
     # The collection filetype. Can be either "html" or "yaml". If omitted, it
     # will default to "html".
     filetype: "html"
@@ -49,7 +49,8 @@ collections:
     #
     # - label: human-readable label for the field
     # - name: unique name identifying the field
-    # - type: the field type - can be one of "input", "richtext", "date", "hidden"
+    # - type: the field type - can be one of "text", "richtext", "date",
+    #         "hidden", "number", "color", "email", "url"
     #
     # And may have any of the following optional fields:
     #
@@ -57,8 +58,8 @@ collections:
     # - required: make the field required when set to `true`
     # - readonly: make the field readonly when set to `true`
     fields:
-      - { label: "Title", name: "title", type: "input" }
-      - { label: "Author", name: "author_name", type: "input" }
+      - { label: "Title", name: "title", type: "text" }
+      - { label: "Author", name: "author_name", type: "text" }
       - { label: "Content", name: "content", type: "richtext" }
   - name: "book"
     label: "Books"
@@ -66,7 +67,7 @@ collections:
     filetype: "yaml"
     description: "A list of books."
     fields:
-      - { label: "Author", name: "author_name", type: "input" }
+      - { label: "Author", name: "author_name", type: "text" }
   - name: "record"
     label: "Records"
     label_singular: "Record"
@@ -74,5 +75,5 @@ collections:
     filetype: "yaml"
     description: "A list of records."
     fields:
-      - { label: "Artist", name: "artist", type: "input" }
-      - { label: "Genre", name: "genre", type: "input" }
+      - { label: "Artist", name: "artist", type: "text" }
+      - { label: "Genre", name: "genre", type: "text" }

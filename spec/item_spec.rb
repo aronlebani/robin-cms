@@ -390,4 +390,8 @@ describe Item do
 
 		expect(File.exist?(File.join(__dir__, 'tmp', 'a-poem-about-ruby.html'))).to be(false)
 	end
+
+	it 'creates subdirectory for item if it does not already exist' do
+		# TODO
+	end
 end

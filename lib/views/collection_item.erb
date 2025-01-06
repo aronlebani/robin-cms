@@ -30,31 +30,15 @@
 			<% unless field.type == 'hidden' %>
 				<label for="<%= field.id %>"><%= field.label %></label>
 			<% end %>
-			<% case field.type
-				 when 'input' %>
+			<% if ['text', 'date', 'number', 'hidden', 'color', 'email', 'url'].include?(field.type) %>
 				<input
+					type="<%= field.type %>"
 					name="<%= field.id %>"
 					value="<%= @item.fields[field.id] || field.default %>"
 					<% if field.required %>required<% end %>
 					<% if field.readonly %>readonly<% end %>
 				/>
-			<% when 'date' %>
-				<input
-					type="date"
-					name="<%= field.id %>"
-					value="<%= @item.fields[field.id] || field.default %>"
-					<% if field.required %>required<% end %>
-					<% if field.readonly %>readonly<% end %>
-				/>
-			<% when 'hidden' %>
-				<input
-					type="hidden"
-					name="<%= field.id %>"
-					value="<%= @item.fields[field.id] || field.default %>"
-					<% if field.required %>required<% end %>
-					<% if field.readonly %>readonly<% end %>
-				/>
-			<% when 'richtext' %>
+			<% elsif field.type == 'richtext' %>
 				<div id="toolbar">
 					<span class="ql-formats">
 						<button class="ql-bold"></button>
