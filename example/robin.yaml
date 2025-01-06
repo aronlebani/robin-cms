@@ -22,7 +22,7 @@ base_route: "admin"
 
 # Accent colour is used to highlight certain elements in the admin portal. You
 # can set this to match the theme of the website.
-accent_color: "#4493f8"
+accent_color: "#fd8a13"
 
 # A list of collections, defining the content model of your CMS.
 collections:

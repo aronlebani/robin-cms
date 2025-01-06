@@ -104,7 +104,7 @@ module RobinCMS
 			@admin_password = ENV['ADMIN_PASS'] || config[:admin_password] || 'admin'
 			@build_command = config[:build_command] || nil
 			@base_route = config[:base_route] || 'admin'
-			@accent_color = config[:accent_color] || '#4493f8'
+			@accent_color = config[:accent_color] || '#fd8a13'
 
 			@collections = config[:collections].map { |c| CollectionParser.new(c) }
 		end
