@@ -9,7 +9,7 @@
 			<% end %>
 			<% if settings.build_command %>
 				<form id="publish-form" action="/<%= settings.base_route %>/publish" method="post">
-					<button type="submit" form="publish-form">Publish site</button>
+					<button class="--safe" type="submit" form="publish-form">Publish site</button>
 				</form>
 			<% end %>
 		</span>
@@ -18,7 +18,7 @@
 		<p><%= @collection.description %></p>
 	<% end %>
 </div>
-<form class="card --clear controls --align-right" action="" method="get">
+<form id="filter-form" class="card --clear controls --align-right" action="" method="get">
 	<label class="--horizontal" for="sort">Sort</label>
 	<select id="sort" name="sort">
 		<% for option in RobinCMS::Item::SORT_OPTIONS %>
@@ -52,9 +52,10 @@
 <div class="card">
 	<% if @items.length == 0 %>
 		<p id="no-items">
-			Nothing to show.
+		Nothing to show.<br /><br />
 			<% if @collection.can_create %>
-				Create a <a href="/<%= settings.base_route %>/collections/<%= @collection.id %>/item">new <%= @collection.label_singular %></a>.
+				Create a <a href="/<%= settings.base_route %>/collections/<%= @collection.id %>/item">new <%= @collection.label_singular.downcase %></a>
+				or try <a href="/<%= settings.base_route %>/collections/<%= @collection.id %>">clearing</a> your search filters.
 			<% end %>
 		</p>
 	<% else %>
@@ -79,7 +80,7 @@
 					<td>
 						<%= Time.parse(item.fields[:updated_at]).strftime('%b %d, %Y') %>
 					</td>
-					<td class="controls">
+					<td>
 						<a href="/<%= settings.base_route %>/collections/<%= @collection.id %>/item?id=<%= item.id %>">
 							Edit
 						</a>
@@ -100,11 +101,11 @@
 			<% end %>
 			<% 16.times do %>
 				<tr>
-					<td>An item</td>
+					<td><a href="">An item</a></td>
 					<td>Jan 07, 2025</td>
 					<td>Jan 07, 2025</td>
-					<td class="controls"><a href="">Edit</a></td>
-					<td><button class="--daner">Delete</button></td>
+					<td><a href="">Edit</a></td>
+					<td><button class="--danger">Delete</button></td>
 				</tr>
 			<% end %>
 		</table>

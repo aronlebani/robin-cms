@@ -10,28 +10,29 @@
 				--border-color: #e6e6e6;
 				--border-radius: 4px;
 				--bg-color: rgb(236, 243, 250);
-				--selected-color: #f5f5f5;
+				--highlight-color: #f5f5f5;
 				--font-color: #141414;
 				--accent-color: <%= settings.accent_color %>;
 				--accent-color-light: <%= settings.accent_color %>1e;
-				--safe-color: #29903b;
+				--safe-color: #4493f8;
+				--safe-color-light: #4493f81e;
 				--danger-color: #f85149;
-				--header-height: 4rem;
+				--danger-color-light: #f851491e;
 				--padding: 1rem;
 				--padding-sm: 0.5rem;
 				--spacer: 1rem;
+				--header-height: 4rem;
+				--content-width: 60rem;
+				--content-left-margin: 20rem;
 				--nav-width: 12rem;
 				--box-shadow: rgba(68, 74, 87, 0.05) 0px 2px 6px 0px, rgba(68, 74, 87, 0.1) 0px 1px 3px 0px;
 			}
 
 			body {
 				margin: 0;
-				color: var(--font-color);
 				font-family: sans-serif;
+				color: var(--font-color);
 				background-color: var(--bg-color);
-				max-width: 70rem;
-				margin: 0 auto;
-				display: flex;
 			}
 
 			header {
@@ -71,7 +72,7 @@
 			}
 
 			tr:nth-child(even) {
-				background-color: var(--selected-color);
+				background-color: var(--highlight-color);
 			}
 
 			label {
@@ -105,6 +106,26 @@
 				width: initial;
 			}
 
+			button {
+				height: 2rem;
+				color: var(--accent-color);
+				border: 1px solid var(--accent-color);
+				border-radius: var(--border-radius);
+				background-color: var(--accent-color-light);
+			}
+
+			button.--danger {
+				color: var(--danger-color);
+				border: 1px solid var(--danger-color);
+				background-color: var(--danger-color-light);
+			}
+
+			button.--safe {
+				color: var(--safe-color);
+				border: 1px solid var(--safe-color);
+				background-color: var(--safe-color-light);
+			}
+
 			fieldset {
 				border: 0;
 			}
@@ -123,7 +144,7 @@
 
 			dialog .controls {
 				justify-content: flex-end;
-				background-color: var(--selected-color);
+				background-color: var(--highlight-color);
 				margin: 0 calc(-1 * var(--padding)) calc(-1 * var(--padding)) calc(-1 * var(--padding));
 				padding: var(--padding);
 			}
@@ -146,14 +167,15 @@
 			}
 
 			#site-nav {
-				flex: 0 0 var(--nav-width);
-				padding-top: var(--header-height);
+				position: fixed;
+				width: var(--nav-width);
+				left: calc(var(--content-left-margin) - var(--nav-width) - var(--spacer));
+				top: calc(var(--header-height) + var(--spacer));
 			}
 
 			#site-nav nav {
-				margin: var(--spacer) var(--spacer) 0 0;
 				height: fit-content;
-				padding: 0 !important;
+				padding: 0;
 			}
 
 			#site-nav a {
@@ -172,9 +194,9 @@
 			}
 
 			#site-content {
-				flex: 1 1 auto;
-				padding-top: var(--header-height);
-				margin: var(--spacer) 0 0 0;
+				max-width: var(--content-width);
+				margin-left: var(--content-left-margin);
+				margin-top: calc(var(--header-height) + var(--spacer));
 
 				<% if @auth_layout %>
 					margin: 2rem auto 0 auto;
@@ -188,8 +210,6 @@
 			}
 
 			#site-footer {
-				margin: 2rem 0;
-
 				<% if @auth_layout %>
 					text-align: center;
 				<% end %>
@@ -244,7 +264,6 @@
 				background-color: var(--bg-color);
 				box-shadow: none;
 				border: 0;
-				padding: 0;
 			}
 
 			.controls {
@@ -266,13 +285,6 @@
 
 			.grow-column {
 				width: 100%;
-			}
-
-			.--danger {
-				color: var(--danger-color);
-			}
-
-			.--safe {
 			}
 		</style>
 	</head>
@@ -316,7 +328,7 @@
 		<% end %>
 		<main id="site-content">
 			<%= yield %>
-			<footer id="site-footer">
+			<footer id="site-footer" class="card --clear">
 				Powered by <a href="https://github.com/aronlebani/robin-cms.git">Robin CMS</a> <%= RobinCMS::VERSION %>
 			</footer>
 		</main>

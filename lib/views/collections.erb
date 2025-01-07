@@ -3,7 +3,7 @@
 	<span class="controls">
 		<% if settings.build_command %>
 			<form id="publish-form" action="/<%= settings.base_route %>/publish" method="post">
-				<button type="submit" form="publish-form">Publish site</button>
+				<button class="--safe" type="submit" form="publish-form">Publish site</button>
 			</form>
 		<% end %>
 	</span>
