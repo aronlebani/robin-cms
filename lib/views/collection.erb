@@ -1,4 +1,4 @@
-<header class="secondary">
+<header class="card secondary">
 	<h2><%= @collection.label %></h2>
 	<span class="controls">
 		<% if @collection.can_create %>
@@ -14,9 +14,9 @@
 	</span>
 </header>
 <% if @collection.description %>
-	<p id="collection-description"><%= @collection.description %></p>
+	<p><%= @collection.description %></p>
 <% end %>
-<form id="filters-form" class="controls --right" action="" method="get">
+<form class="card controls --right" action="" method="get">
 	<label class="--horizontal" for="sort">Sort</label>
 	<select id="sort" name="sort">
 		<% for option in RobinCMS::Item::SORT_OPTIONS %>
@@ -47,53 +47,64 @@
 	<input id="search" name="q" type="search" value="<%= query_params['q'] %>" />
 	<button type="submit">Apply</button>
 </form>
-<% if @items.length == 0 %>
-	<p id="no-items">
-		Nothing to show.
-		<% if @collection.can_create %>
-			Create a <a href="/<%= settings.base_route %>/collections/<%= @collection.id %>/item">new <%= @collection.label_singular %></a>.
-		<% end %>
-	</p>
-<% else %>
-	<table>
-		<tr>
-			<th class="grow">Name</th>
-			<th>Created at</th>
-			<th>Last updated</th>
-			<th></th>
-			<th></th>
-		</tr>
-		<% for item in @items %>
+<div class="card">
+	<% if @items.length == 0 %>
+		<p id="no-items">
+			Nothing to show.
+			<% if @collection.can_create %>
+				Create a <a href="/<%= settings.base_route %>/collections/<%= @collection.id %>/item">new <%= @collection.label_singular %></a>.
+			<% end %>
+		</p>
+	<% else %>
+		<table>
 			<tr>
-				<td>
-					<a href="/<%= settings.base_route %>/collections/<%= @collection.id %>/item?id=<%= item.id %>">
-						<%= item.fields[:title] %>
-					</a>
-				</td>
-				<td>
-					<%= Time.parse(item.fields[:created_at]).strftime('%b %d, %Y') %>
-				</td>
-				<td>
-					<%= Time.parse(item.fields[:updated_at]).strftime('%b %d, %Y') %>
-				</td>
-				<td class="controls">
-					<a href="/<%= settings.base_route %>/collections/<%= @collection.id %>/item?id=<%= item.id %>">
-						Edit
-					</a>
-				</td>
-				<td>
-					<% if @collection.can_delete %>
-						<%= erb :dialog, locals: {
-							id: "delete#{item.id}",
-							heading: "Delete #{item.fields[:title]}?",
-							body: "Are you sure you want to delete #{item.fields[:title]}?",
-							action: "/#{settings.base_route}/collections/#{@collection.id}/item/delete?id=#{item.id}",
-							button_label: 'Delete',
-							danger: true
-						} %>
-					<% end %>
-				</td>
+				<th class="grow">Name</th>
+				<th>Created at</th>
+				<th>Last updated</th>
+				<th></th>
+				<th></th>
 			</tr>
-		<% end %>
-	</table>
-<% end %>
+			<% for item in @items %>
+				<tr>
+					<td>
+						<a href="/<%= settings.base_route %>/collections/<%= @collection.id %>/item?id=<%= item.id %>">
+							<%= item.fields[:title] %>
+						</a>
+					</td>
+					<td>
+						<%= Time.parse(item.fields[:created_at]).strftime('%b %d, %Y') %>
+					</td>
+					<td>
+						<%= Time.parse(item.fields[:updated_at]).strftime('%b %d, %Y') %>
+					</td>
+					<td class="controls">
+						<a href="/<%= settings.base_route %>/collections/<%= @collection.id %>/item?id=<%= item.id %>">
+							Edit
+						</a>
+					</td>
+					<td>
+						<% if @collection.can_delete %>
+							<%= erb :dialog, locals: {
+								id: "delete#{item.id}",
+								heading: "Delete #{item.fields[:title]}?",
+								body: "Are you sure you want to delete #{item.fields[:title]}?",
+								action: "/#{settings.base_route}/collections/#{@collection.id}/item/delete?id=#{item.id}",
+								button_label: 'Delete',
+								danger: true
+							} %>
+						<% end %>
+					</td>
+				</tr>
+			<% end %>
+			<% 16.times do %>
+				<tr>
+					<td>An item</td>
+					<td>Jan 07, 2025</td>
+					<td>Jan 07, 2025</td>
+					<td class="controls"><a href="">Edit</a></td>
+					<td><button class="--daner">Delete</button></td>
+				</tr>
+			<% end %>
+		</table>
+	<% end %>
+</div>

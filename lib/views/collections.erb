@@ -1,4 +1,4 @@
-<header class="secondary">
+<header class="card secondary">
 	<h2>Dashboard</h2>
 	<span class="controls">
 		<% if settings.build_command %>
@@ -8,31 +8,33 @@
 		<% end %>
 	</span>
 </header>
-<table>
-	<tr>
-		<th>Collection</th>
-		<th>Count</th>
-		<th></th>
-		<th></th>
-	</tr>
-	<% for collection in @collections %>
+<div class="card">
+	<table>
 		<tr>
-			<td><%= collection.label %></td>
-			<td>
-				<%= @all_items.filter { |item| item.fields[:kind] == collection.id }.count %>
-			</td>
-			<td>
-				<a href="/<%= settings.base_route %>/collections/<%= collection.id %>">
-					View <%= collection.label %>
-				</a>
-			</td>
-			<td>
-				<% if collection.can_create %>
-					<a href="/<%= settings.base_route %>/collections/<%= collection.id %>/item">
-						New <%= collection.label_singular %>
-					</a>
-				<% end %>
-			</td>
+			<th>Collection</th>
+			<th>Count</th>
+			<th></th>
+			<th></th>
 		</tr>
-	<% end %>
-</table>
+		<% for collection in @collections %>
+			<tr>
+				<td><%= collection.label %></td>
+				<td>
+					<%= @all_items.filter { |item| item.fields[:kind] == collection.id }.count %>
+				</td>
+				<td>
+					<a href="/<%= settings.base_route %>/collections/<%= collection.id %>">
+						View <%= collection.label %>
+					</a>
+				</td>
+				<td>
+					<% if collection.can_create %>
+						<a href="/<%= settings.base_route %>/collections/<%= collection.id %>/item">
+							New <%= collection.label_singular %>
+						</a>
+					<% end %>
+				</td>
+			</tr>
+		<% end %>
+	</table>
+</div>

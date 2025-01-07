@@ -1,6 +1,6 @@
 <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
 
-<header class="secondary">
+<header class="card secondary">
 	<h2><%= @item.id ? 'Edit' : 'New' %> <%= @collection.id %></h2>
 	<span class="controls">
 		<a href="/<%= settings.base_route %>/collections/<%= @collection.id %>">Back</a>
@@ -17,7 +17,7 @@
 	</span>
 </header>
 <form
-	id="item-form"
+	class="card"
 	<% if @item.id %>
 		action="/<%= settings.base_route %>/collections/<%= @collection.id %>/item?id=<%= @item.id %>"
 	<% else %>
