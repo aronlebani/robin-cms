@@ -13,7 +13,7 @@
 				--selected-color: #f5f5f5;
 				--font-color: #141414;
 				--accent-color: <%= settings.accent_color %>;
-				--accent-color-light: <%= settings.accent_color %>3c;
+				--accent-color-light: <%= settings.accent_color %>1e;
 				--safe-color: #29903b;
 				--danger-color: #f85149;
 				--header-height: 4rem;
@@ -26,64 +26,23 @@
 
 			body {
 				margin: 0;
-				height: 100vh;
-				overflow-y: hidden;
 				color: var(--font-color);
 				font-family: sans-serif;
 				background-color: var(--bg-color);
+				max-width: 70rem;
+				margin: 0 auto;
+				display: flex;
 			}
 
 			header {
 				display: flex;
 				align-items: center;
 				justify-content: space-between;
-				height: var(--header-height);
-				border-bottom: 1px solid var(--border-color);
-				padding: 0 var(--padding);
-				background-color: white;
-				box-shadow: var(--box-shadow);
-			}
-
-			header.secondary {
-				height: unset;
 			}
 
 			header h1,
 			header h2 {
 				margin: 0;
-			}
-
-			main {
-				max-width: 70rem;
-				margin: 0 auto;
-				display: flex;
-			}
-
-			nav {
-				flex: 0 1 auto;
-				min-width: var(--nav-width);
-				margin: var(--spacer) var(--spacer) 0 0;
-				height: fit-content;
-				padding: 0 !important;
-			}
-
-			nav ul li a {
-				color: var(--font-color);
-				text-decoration: none;
-				display: block;
-				padding: var(--padding-sm);
-			}
-
-			nav ul li.current a,
-			nav ul li:hover a {
-				background-color: var(--accent-color-light);
-				border-left: 3px solid var(--accent-color);
-				padding-left: calc(var(--padding-sm) - 3px);
-				color: var(--accent-color);
-			}
-
-			footer {
-				margin: 2rem 0;
 			}
 
 			h1 {
@@ -169,15 +128,52 @@
 				padding: var(--padding);
 			}
 
+			#site-header {
+				position: fixed;
+				left: 0;
+				right: 0;
+				top: 0;
+				height: var(--header-height);
+				border-bottom: 1px solid var(--border-color);
+				padding: 0 var(--padding);
+				background-color: white;
+				box-shadow: var(--box-shadow);
+			}
+
 			#site-header #robin-logo {
 				width: calc(var(--header-height) - 2 * var(--padding-sm));
 				margin-right: var(--padding-sm);
 			}
 
-			#contentarea {
-				flex: 1 0 auto;
-				height: calc(100vh - var(--header-height) - var(--spacer));
-				overflow-y: scroll;
+			#site-nav {
+				flex: 0 0 var(--nav-width);
+				padding-top: var(--header-height);
+			}
+
+			#site-nav nav {
+				margin: var(--spacer) var(--spacer) 0 0;
+				height: fit-content;
+				padding: 0 !important;
+			}
+
+			#site-nav a {
+				color: var(--font-color);
+				text-decoration: none;
+				display: block;
+				padding: var(--padding-sm);
+			}
+
+			#site-nav li.current a,
+			#site-nav li:hover a {
+				background-color: var(--accent-color-light);
+				border-left: 3px solid var(--accent-color);
+				padding-left: calc(var(--padding-sm) - 3px);
+				color: var(--accent-color);
+			}
+
+			#site-content {
+				flex: 1 1 auto;
+				padding-top: var(--header-height);
 				margin: var(--spacer) 0 0 0;
 
 				<% if @auth_layout %>
@@ -187,18 +183,19 @@
 				<% end %>
 			}
 
-			#contentarea > * {
+			#site-content > * {
 				margin-bottom: var(--spacer);
 			}
 
-			#contentarea > footer {
+			#site-footer {
+				margin: 2rem 0;
+
 				<% if @auth_layout %>
 					text-align: center;
 				<% end %>
 			}
 
 			#no-items {
-				margin: 2rem 0;
 				text-align: center;
 			}
 
@@ -243,12 +240,19 @@
 				padding: var(--padding);
 			}
 
+			.card.--clear {
+				background-color: var(--bg-color);
+				box-shadow: none;
+				border: 0;
+				padding: 0;
+			}
+
 			.controls {
 				display: flex;
 				align-items: center;
 			}
 
-			.controls.--right {
+			.controls.--align-right {
 				justify-content: flex-end;
 			}
 
@@ -260,7 +264,7 @@
 				margin: var(--spacer) 0;
 			}
 
-			.grow {
+			.grow-column {
 				width: 100%;
 			}
 
@@ -284,8 +288,8 @@
 				<% end %>
 			</span>
 		</header>
-		<main>
-			<% unless @auth_layout %>
+		<% unless @auth_layout %>
+			<aside id="site-nav">
 				<nav class="card">
 					<ul>
 						<li
@@ -308,13 +312,13 @@
 						<% end %>
 					</ul>
 				</nav>
-			<% end %>
-			<div id="contentarea">
-				<%= yield %>
-				<footer>
-					Powered by <a href="https://github.com/aronlebani/robin-cms.git">Robin CMS</a> <%= RobinCMS::VERSION %>
-				</footer>
-			</div>
+			</aside>
+		<% end %>
+		<main id="site-content">
+			<%= yield %>
+			<footer id="site-footer">
+				Powered by <a href="https://github.com/aronlebani/robin-cms.git">Robin CMS</a> <%= RobinCMS::VERSION %>
+			</footer>
 		</main>
 		<dialog id="publishsuccess" class="card">
 			<h2>Success!</h2>

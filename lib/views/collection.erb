@@ -1,22 +1,24 @@
-<header class="card secondary">
-	<h2><%= @collection.label %></h2>
-	<span class="controls">
-		<% if @collection.can_create %>
-			<a href="/<%= settings.base_route %>/collections/<%= @collection.id %>/item">
-				New <%= @collection.id %>
-			</a>
-		<% end %>
-		<% if settings.build_command %>
-			<form id="publish-form" action="/<%= settings.base_route %>/publish" method="post">
-				<button type="submit" form="publish-form">Publish site</button>
-			</form>
-		<% end %>
-	</span>
-</header>
-<% if @collection.description %>
-	<p><%= @collection.description %></p>
-<% end %>
-<form class="card controls --right" action="" method="get">
+<div class="card">
+	<header>
+		<h2><%= @collection.label %></h2>
+		<span class="controls">
+			<% if @collection.can_create %>
+				<a href="/<%= settings.base_route %>/collections/<%= @collection.id %>/item">
+					New <%= @collection.id %>
+				</a>
+			<% end %>
+			<% if settings.build_command %>
+				<form id="publish-form" action="/<%= settings.base_route %>/publish" method="post">
+					<button type="submit" form="publish-form">Publish site</button>
+				</form>
+			<% end %>
+		</span>
+	</header>
+	<% if @collection.description %>
+		<p><%= @collection.description %></p>
+	<% end %>
+</div>
+<form class="card --clear controls --align-right" action="" method="get">
 	<label class="--horizontal" for="sort">Sort</label>
 	<select id="sort" name="sort">
 		<% for option in RobinCMS::Item::SORT_OPTIONS %>
@@ -58,7 +60,7 @@
 	<% else %>
 		<table>
 			<tr>
-				<th class="grow">Name</th>
+				<th class="grow-column">Name</th>
 				<th>Created at</th>
 				<th>Last updated</th>
 				<th></th>
