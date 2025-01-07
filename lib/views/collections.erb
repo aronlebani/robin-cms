@@ -3,7 +3,7 @@
 	<span class="controls">
 		<% if settings.build_command %>
 			<form id="publish-form" action="/<%= settings.base_route %>/publish" method="post">
-				<button class="--safe" type="submit" form="publish-form">Publish site</button>
+				<button type="submit" form="publish-form">Publish site</button>
 			</form>
 		<% end %>
 	</span>
@@ -12,7 +12,7 @@
 	<table>
 		<tr>
 			<th>Collection</th>
-			<th>Count</th>
+			<th class="grow-column">Count</th>
 			<th></th>
 			<th></th>
 		</tr>

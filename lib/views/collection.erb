@@ -9,7 +9,7 @@
 			<% end %>
 			<% if settings.build_command %>
 				<form id="publish-form" action="/<%= settings.base_route %>/publish" method="post">
-					<button class="--safe" type="submit" form="publish-form">Publish site</button>
+					<button type="submit" form="publish-form">Publish site</button>
 				</form>
 			<% end %>
 		</span>
@@ -88,7 +88,7 @@
 					<td>
 						<% if @collection.can_delete %>
 							<%= erb :dialog, locals: {
-								id: "delete#{item.id}",
+								id: item.id,
 								heading: "Delete #{item.fields[:title]}?",
 								body: "Are you sure you want to delete #{item.fields[:title]}?",
 								action: "/#{settings.base_route}/collections/#{@collection.id}/item/delete?id=#{item.id}",
@@ -99,7 +99,8 @@
 					</td>
 				</tr>
 			<% end %>
-			<% 16.times do %>
+			<% 0.times do %>
+				<%# TODO - delete me! %>
 				<tr>
 					<td><a href="">An item</a></td>
 					<td>Jan 07, 2025</td>

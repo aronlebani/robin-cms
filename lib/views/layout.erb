@@ -14,8 +14,6 @@
 				--font-color: #141414;
 				--accent-color: <%= settings.accent_color %>;
 				--accent-color-light: <%= settings.accent_color %>1e;
-				--safe-color: #4493f8;
-				--safe-color-light: #4493f81e;
 				--danger-color: #f85149;
 				--danger-color-light: #f851491e;
 				--padding: 1rem;
@@ -120,12 +118,6 @@
 				background-color: var(--danger-color-light);
 			}
 
-			button.--safe {
-				color: var(--safe-color);
-				border: 1px solid var(--safe-color);
-				background-color: var(--safe-color-light);
-			}
-
 			fieldset {
 				border: 0;
 			}
@@ -156,7 +148,8 @@
 				top: 0;
 				height: var(--header-height);
 				border-bottom: 1px solid var(--border-color);
-				padding: 0 var(--padding);
+				padding-left: var(--content-left-margin);
+				padding-right: calc(100vw - var(--content-left-margin) - var(--content-width));
 				background-color: white;
 				box-shadow: var(--box-shadow);
 			}
@@ -199,9 +192,8 @@
 				margin-top: calc(var(--header-height) + var(--spacer));
 
 				<% if @auth_layout %>
-					margin: 2rem auto 0 auto;
-					flex: 0 1 40rem;
-					height: unset;
+					max-width: 30rem;
+					margin: calc(var(--header-height) + 2rem) auto 0 auto;
 				<% end %>
 			}
 
@@ -213,6 +205,19 @@
 				<% if @auth_layout %>
 					text-align: center;
 				<% end %>
+			}
+
+			#filter-form {
+				margin-bottom: 0;
+			}
+
+			#filter-form select,
+			#filter-form input {
+				padding: 0.25rem;
+			}
+
+			#filter-form button {
+				height: 23px;
 			}
 
 			#no-items {
@@ -243,13 +248,9 @@
 				justify-content: space-between;
 			}
 
-			#login-form #robin-logo {
-				width: 20rem;
-				margin-right: 4rem;
-			}
-
-			#login-form > * {
-				flex: 1 1 50%;
+			#login-form fieldset {
+				margin-left: 2rem;
+				flex: 1 1 15rem;
 			}
 
 			.card {
