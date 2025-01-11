@@ -13,6 +13,16 @@ module RobinCMS
 			item || collections
 		end
 
-		module_function :query_params, :current_collection
+		def status_label(value)
+			s = RobinCMS::Item::STATUS_OPTIONS.find { |o| o[:value] == value }
+			s[:label]
+		end
+
+		# For generating safe id's where the id needs to be based on user
+		# input. Prevents potential id collisions.
+		def safe_id(id, prefix)
+			id = id.to_s.gsub('-', '_').gsub(/\W+/, '')
+			"__#{prefix}_#{id}"
+		end
 	end
 end

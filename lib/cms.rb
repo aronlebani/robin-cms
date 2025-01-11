@@ -110,8 +110,8 @@ module RobinCMS
 					begin
 						Item.create(params[:c_id], params)
 					rescue IOError
-						@error = 'An item with the same name already exists'
-						erb :error
+						flash[:error] = 'An item with the same name already exists'
+						redirect "/#{settings.base_route}/collections/#{params[:c_id]}/item"
 					end
 				end
 

@@ -1,4 +1,4 @@
-<dialog id="__dialog_delete_<%= id.gsub('-', '') %>" class="card">
+<dialog id="<%= safe_id(id, 'dialog_delete') %>" class="card">
 	<h2><%= heading %></h2>
 	<p>
 		<%= body %>
@@ -22,7 +22,7 @@
 	<% if danger %>
 		class="--danger"
 	<% end %>
-	onclick="__dialog_delete_<%= id.gsub('-', '') %>.showModal()"
+	onclick="<%= safe_id(id, 'dialog_delete') %>.showModal()"
 >
 	<%= button_label %>
 </button>

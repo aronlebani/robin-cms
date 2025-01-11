@@ -111,6 +111,9 @@ describe Item do
 		end.to raise_error(IOError)
 	end
 
+	it 'creates a subdirectory if it does not already exist' do
+	end
+
 	it 'finds the item' do
 		File.write(File.join(__dir__, 'tmp', 'a-poem-about-ruby.html'), <<~HTML)
 			---
@@ -396,4 +399,6 @@ describe Item do
 	it 'creates subdirectory for item if it does not already exist' do
 		# TODO
 	end
+
+	# TODO - status tests
 end

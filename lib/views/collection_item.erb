@@ -1,7 +1,7 @@
 <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
 
 <header class="card">
-	<h2><%= @item.id ? 'Edit' : 'New' %> <%= @collection.id %></h2>
+	<h2><%= @item.id ? 'Edit' : 'New' %> <%= @collection.label_singular.downcase %></h2>
 	<span class="controls">
 		<a href="/<%= settings.base_route %>/collections/<%= @collection.id %>">Back</a>
 		<% if @collection.can_delete && @item.id %>
@@ -25,20 +25,37 @@
 	<% end %>
 	method="post"
 >
-	<% for field in @collection.fields %>
+	<% for field in @collection.ordered_fields %>
 		<div class="field">
 			<% unless field.type == 'hidden' %>
-				<label for="<%= field.id %>"><%= field.label %></label>
+				<label for="<%= safe_id(field.id, 'field') %>"><%= field.label %></label>
 			<% end %>
 			<% if ['text', 'date', 'number', 'hidden', 'color', 'email', 'url'].include?(field.type) %>
 				<input
-					<%# TODO - need to add an id here for the label %>
+					id="<%= safe_id(field.id, 'field') %>"
 					type="<%= field.type %>"
 					name="<%= field.id %>"
 					value="<%= @item.fields[field.id] || field.default %>"
 					<% if field.required %>required<% end %>
 					<% if field.readonly %>readonly<% end %>
 				/>
+			<% elsif field.type == 'select' %>
+				<select
+					id="<%= safe_id(field.id, 'field') %>"
+					name="<%= field.id %>"
+					value="<%= @item.fields[field.id] || field.default %>"
+				>
+					<% for option in field.options %>
+						<option
+							value="<%= option[:value] %>"
+							<% if option[:value] == (@item.fields[field.id] || field.default) %>
+								selected
+							<% end %>
+						>
+							<%= option[:label] %>
+						</option>
+					<% end %>
+				</select>
 			<% elsif field.type == 'richtext' %>
 				<div id="toolbar">
 					<span class="ql-formats">
@@ -61,17 +78,6 @@
 					<span class="ql-formats">
 						<button class="ql-list" value="ordered"></button>
 						<button class="ql-list" value="bullet"></button>
-						<button class="ql-indent" value="-1"></button>
-						<button class="ql-indent" value="+1"></button>
-					</span>
-					<span class="ql-formats">
-						<button class="ql-direction" value="rtl"></button>
-						<select class="ql-align"></select>
-					</span>
-					<span class="ql-formats">
-						<button class="ql-link"></button>
-						<button class="ql-image"></button>
-						<button class="ql-video"></button>
 					</span>
 				</div>
 				<div id="editor"><%= @item.fields[:content] %></div>
@@ -86,8 +92,11 @@
 			<% end %>
 		</div>
 	<% end %>
-	<footer>
-		<button type="submit">Submit</button>
+	<% if flash[:error] %>
+		<small class="--danger"><%= flash[:error] %></small>
+	<% end %>
+	<footer class="controls --align-right">
+		<button type="submit">Save <%= @collection.label_singular.downcase %></button>
 	</footer>
 </form>
 

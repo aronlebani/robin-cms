@@ -51,7 +51,9 @@ module RobinCMS
 		end
 
 		def save
-			return if File.exist?(filename)
+			raise IOError, 'An item with the same name already exists' if exist?
+
+			FileUtils.mkdir_p(File.join($cfg.content_dir, @collection.location))
 
 			timestamp = Time.now.strftime(DATETIME_FORMAT)
 			@fields[:created_at] = timestamp
@@ -60,7 +62,7 @@ module RobinCMS
 		end
 
 		def update
-			return unless File.exist?(filename)
+			raise IOError, 'File not found' unless File.exist?(filename)
 
 			timestamp = Time.now.strftime(DATETIME_FORMAT)
 			@fields[:updated_at] = timestamp
@@ -68,7 +70,7 @@ module RobinCMS
 		end
 
 		def delete
-			return unless File.exist?(filename)
+			raise IOError, 'File not found' unless File.exist?(filename)
 
 			File.delete(filename)
 		end
@@ -108,12 +110,16 @@ module RobinCMS
 				sort_direction = sort.start_with?('-') ? -1 : 1
 				re = Regexp.new(q, 'i')
 
-				# TODO - status
-
 				by_collection = lambda do |i|
 					return true if collection_id.nil?
 
 					i.fields[:kind] == collection_id.to_sym
+				end
+
+				by_status = lambda do |i|
+					return true if status.nil? || status == ''
+
+					i.fields[:status] == status
 				end
 
 				by_search = lambda do |i|
@@ -131,18 +137,14 @@ module RobinCMS
 					end * sort_direction
 				end
 
-				all.filter(&by_collection).filter(&by_search).sort(&by_field)
+				all.filter(&by_collection)
+				   .filter(&by_search)
+				   .filter(&by_status)
+				   .sort(&by_field)
 			end
 
 			def create(collection_id, fields)
 				id = make_stub(fields[:title])
-
-				# TODO - this should be in the save function so that it works
-				# for both
-				if find(id, collection_id)
-					raise IOError, 'An item with the same name already exists'
-				end
-
 				item = new(id, collection_id, fields)
 				item.save
 			end
@@ -177,6 +179,11 @@ module RobinCMS
 
 			filename = "#{@id}.#{@collection.filetype}"
 			File.join($cfg.content_dir, @collection.location, filename)
+		end
+
+		def exist?
+			pattern = File.join($cfg.content_dir, '**', @id + '.*')
+			Dir.glob(pattern).length >= 1
 		end
 
 		def serialize

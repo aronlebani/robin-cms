@@ -17,11 +17,11 @@ module RobinCMS
 
 		ALLOWED_TYPES = [
 			'text', 'richtext', 'date', 'hidden', 'number', 'color', 'email',
-			'url'
+			'url', 'select'
 		].freeze
 		REQUIRED_ATTRS = [:name, :label, :type].freeze
 
-		attr_reader :id, :label, :type, :default, :required, :readonly
+		attr_reader :id, :label, :type, :default, :required, :readonly, :options
 
 		def initialize(config)
 			unless ALLOWED_TYPES.include?(config[:type])
@@ -32,12 +32,15 @@ module RobinCMS
 				raise ParseError, "Field missing one or more required attributes #{REQUIRED_ATTRS.join(', ')} for field #{config[:name]}."
 			end
 
+			# TODO - validate options array
+
 			@id = config[:name].to_sym
 			@label = config[:label]
 			@type = config[:type]
 			@default = config[:default] || ''
 			@required = config[:required] || false
 			@readonly = config[:readonly] || false
+			@options = config[:options] || []
 		end
 	end
 
@@ -50,7 +53,20 @@ module RobinCMS
 			{ :label => 'Title', :name => 'title', :type => 'text' },
 			{ :label => 'Collection', :name => 'kind', :type => 'hidden' },
 			{ :label => 'Published date', :name => 'created_at', :type => 'hidden' },
-			{ :label => 'Last edited', :name => 'updated_at', :type => 'hidden' }
+			{ :label => 'Last edited', :name => 'updated_at', :type => 'hidden' },
+			{
+				:label => 'Status',
+				:name => 'status',
+				:type => 'select',
+				:default => 'draft',
+				:options => [{
+					:label => 'Draft',
+					:value => 'draft'
+				}, {
+					:label => 'Published',
+					:value => 'published'
+				}]
+			}
 		].freeze
 
 		attr_reader :id, :label, :label_singular, :location, :filetype,
@@ -80,8 +96,15 @@ module RobinCMS
 			@fields = (config[:fields] || [])
 				.concat(IMPLICIT_FIELDS)
 				.uniq { |f| f[:name] }
-				.sort { |fa, fb| fa[:name] == 'title' ? -1 : fb[:name] == 'title' ? 1 : 0 }
 				.map { |f| FieldParser.new(f) }
+		end
+
+		def ordered_fields
+			title_field = @fields.find { |f| f.id == :title }
+			status_field = @fields.find { |f| f.id == :status }
+			remaining_fields = @fields.filter { |f| f.id != :title && f.id != :status }
+
+			[title_field, status_field, *remaining_fields]
 		end
 	end
 
