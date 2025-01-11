@@ -16,14 +16,18 @@
 				--accent-color-light: <%= settings.accent_color %>1e;
 				--danger-color: #f85149;
 				--danger-color-light: #f851491e;
+				--action-color: #4493f8;
+				--action-color-light: #4493f81e;
 				--padding: 1rem;
 				--padding-sm: 0.5rem;
+				--padding-md: 0.75rem;
 				--spacer: 1rem;
 				--header-height: 4rem;
 				--content-width: 60rem;
 				--content-left-margin: 20rem;
 				--nav-width: 12rem;
 				--box-shadow: rgba(68, 74, 87, 0.05) 0px 2px 6px 0px, rgba(68, 74, 87, 0.1) 0px 1px 3px 0px;
+				--box-shadow-inset: inset rgba(68, 74, 87, 0.05) 0px 1px 2px 0px, inset rgba(68, 74, 87, 0.1) 0px 1px 2px 0px;
 			}
 
 			body {
@@ -59,17 +63,43 @@
 
 			table {
 				width: 100%;
-				border-collapse: collapse;
+				border-spacing: 0; /* border-collapse doesn't work with border radii */
+			}
+
+			th:first-child,
+			td:first-child {
+				padding-left: var(--padding);
+			}
+
+			th:last-child,
+			td:last-child {
+				padding-right: var(--padding);
 			}
 
 			td,
 			th {
 				text-align: left;
-				padding: var(--padding-sm);
+				padding: var(--padding-md);
 				white-space: nowrap;
 			}
 
-			tr:nth-child(even) {
+			tr:first-child td:first-child {
+				border-top-left-radius: var(--border-radius);
+			}
+
+			tr:first-child td:last-child {
+				border-top-right-radius: var(--border-radius);
+			}
+
+			tr:last-child td:first-child {
+				border-bottom-left-radius: var(--border-radius);
+			}
+
+			tr:last-child td:last-child {
+				border-bottom-right-radius: var(--border-radius);
+			}
+
+			tbody tr:nth-child(even) {
 				background-color: var(--highlight-color);
 			}
 
@@ -90,6 +120,11 @@
 				max-width: 30rem;
 				box-sizing: border-box;
 				padding: var(--padding-sm);
+			}
+
+			input::placeholder {
+				color: var(--font-color);
+				padding-left: 0.25rem;
 			}
 
 			select {
@@ -116,6 +151,12 @@
 				color: var(--danger-color);
 				border: 1px solid var(--danger-color);
 				background-color: var(--danger-color-light);
+			}
+
+			button.--action {
+				color: var(--action-color);
+				border: 1px solid var(--action-color);
+				background-color: var(--action-color-light);
 			}
 
 			fieldset {
@@ -179,15 +220,19 @@
 				color: var(--font-color);
 				text-decoration: none;
 				display: block;
-				padding: var(--padding-sm);
+				padding: var(--padding-sm) var(--padding);
 			}
 
 			#site-nav li.current a,
 			#site-nav li:hover a {
 				background-color: var(--accent-color-light);
 				border-left: 3px solid var(--accent-color);
-				padding-left: calc(var(--padding-sm) - 3px);
+				padding-left: calc(var(--padding) - 3px);
 				color: var(--accent-color);
+			}
+
+			#site-nav h2 {
+				padding-left: var(--padding);
 			}
 
 			#site-content {
@@ -218,14 +263,14 @@
 			#filter-form select,
 			#filter-form input {
 				padding: 0.25rem;
+				border-radius: 12px;
+				background-color: var(--accent-color-light);
+				border: 1px solid var(--accent-color);
 			}
 
 			#filter-form button {
-				height: 23px;
-			}
-
-			#no-items {
-				text-align: center;
+				height: 24px;
+				border-radius: 12px;
 			}
 
 			#toolbar {
@@ -284,8 +329,32 @@
 				margin-left: var(--padding);
 			}
 
+			.badge {
+				border-radius: 0.625rem;
+				text-align: center;
+				padding: 0 0.5rem;
+				display: block;
+				height: 1.25rem;
+				line-height: 1.25rem;
+			}
+
+			.badge.--draft {
+				background-color: var(--accent-color-light);
+				color: var(--accent-color);
+			}
+
+			.badge.--published {
+				background-color: var(--action-color-light);
+				color: var(--action-color);
+			}
+
 			.field {
 				margin: var(--spacer) 0;
+			}
+
+			.no-items {
+				text-align: center;
+				padding: 2rem;
 			}
 
 			.grow-column {
@@ -308,6 +377,7 @@
 		<% unless @auth_layout %>
 			<aside id="site-nav">
 				<nav class="card">
+					<h2>Collections</h2>
 					<ul>
 						<li
 							<% if current_collection == 'collections' %>

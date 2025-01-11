@@ -46,28 +46,38 @@
 		<% end %>
 	</select>
 	<label class="--horizontal" for="search">Search</label>
-	<input id="search" name="q" type="search" value="<%= query_params['q'] %>" />
+	<input
+		id="search"
+		name="q"
+		type="search"
+		value="<%= query_params['q'] %>"
+		placeholder="Search <%= @collection.label %>..."
+	/>
 	<button type="submit">Apply</button>
 </form>
-<div class="card">
-	<% if @items.length == 0 %>
-		<p id="no-items">
-		Nothing to show.<br /><br />
-			<% if @collection.can_create %>
-				Create a <a href="/<%= settings.base_route %>/collections/<%= @collection.id %>/item">new <%= @collection.label_singular.downcase %></a>
-				or try <a href="/<%= settings.base_route %>/collections/<%= @collection.id %>">clearing</a> your search filters.
-			<% end %>
-		</p>
-	<% else %>
-		<table>
-			<tr>
-				<th class="grow-column">Name</th>
-				<th>Status</th>
-				<th>Created at</th>
-				<th>Last updated</th>
-				<th></th>
-				<th></th>
+<table>
+	<thead>
+		<tr>
+			<th class="grow-column">Name</th>
+			<th>Status</th>
+			<th>Created at</th>
+			<th>Last updated</th>
+		</tr>
+	</thead>
+	<tbody class="card">
+		<% if @items.length == 0 %>
+			<tr class="card">
+				<td class="no-items" colspan="4">
+					Nothing to show.
+					<br />
+					<br />
+					<% if @collection.can_create %>
+						Create a <a href="/<%= settings.base_route %>/collections/<%= @collection.id %>/item">new <%= @collection.label_singular.downcase %></a>
+						or try <a href="/<%= settings.base_route %>/collections/<%= @collection.id %>">clearing</a> your search filters.
+					<% end %>
+				</td>
 			</tr>
+		<% else %>
 			<% for item in @items %>
 				<tr>
 					<td>
@@ -76,7 +86,9 @@
 						</a>
 					</td>
 					<td>
-						<%= status_label(item.fields[:status]) %>
+						<small class="badge --<%= item.fields[:status] %>">
+							<%= status_label(item.fields[:status]) %>
+						</small>
 					</td>
 					<td>
 						<%= Time.parse(item.fields[:created_at]).strftime('%b %d, %Y') %>
@@ -84,35 +96,17 @@
 					<td>
 						<%= Time.parse(item.fields[:updated_at]).strftime('%b %d, %Y') %>
 					</td>
-					<td>
-						<a href="/<%= settings.base_route %>/collections/<%= @collection.id %>/item?id=<%= item.id %>">
-							Edit
-						</a>
-					</td>
-					<td>
-						<% if @collection.can_delete %>
-							<%= erb :dialog, locals: {
-								id: item.id,
-								heading: "Delete #{item.fields[:title]}?",
-								body: "Are you sure you want to delete #{item.fields[:title]}?",
-								action: "/#{settings.base_route}/collections/#{@collection.id}/item/delete?id=#{item.id}",
-								button_label: 'Delete',
-								danger: true
-							} %>
-						<% end %>
-					</td>
 				</tr>
 			<% end %>
-			<% 0.times do %>
+			<% 16.times do %>
 				<%# TODO - delete me! %>
 				<tr>
 					<td><a href="">An item</a></td>
+					<td><small class="badge --published">Published</small></td>
 					<td>Jan 07, 2025</td>
 					<td>Jan 07, 2025</td>
-					<td><a href="">Edit</a></td>
-					<td><button class="--danger">Delete</button></td>
 				</tr>
 			<% end %>
-		</table>
-	<% end %>
-</div>
+		<% end %>
+	</tbody>
+</table>

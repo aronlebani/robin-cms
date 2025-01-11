@@ -8,14 +8,16 @@
 		<% end %>
 	</span>
 </header>
-<div class="card">
-	<table>
+<table>
+	<thead>
 		<tr>
 			<th>Collection</th>
 			<th class="grow-column">Count</th>
 			<th></th>
 			<th></th>
 		</tr>
+	</thead>
+	<tbody class="card">
 		<% for collection in @collections %>
 			<tr>
 				<td><%= collection.label %></td>
@@ -36,5 +38,5 @@
 				</td>
 			</tr>
 		<% end %>
-	</table>
-</div>
+	</tbody>
+</table>
