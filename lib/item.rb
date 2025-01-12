@@ -124,7 +124,7 @@ module RobinCMS
 				end
 
 				by_field = lambda do |a, b|
-					return true if sort.nil?
+					return 0 if sort.nil?
 
 					sort_by = sort.sub('-', '').to_sym
 					sort_direction = sort.start_with?('-') ? -1 : 1
