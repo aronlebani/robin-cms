@@ -85,6 +85,8 @@ describe ConfigurationParser do
 	end
 
 	it 'defaults to label if no label_singular provided' do
-		# TODO
+		cfg = ConfigurationParser.new(File.join(__dir__, 'files/valid.yaml'))
+
+		expect(cfg.collections[0].label_singular).to eql('Poem')
 	end
 end

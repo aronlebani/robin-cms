@@ -77,7 +77,8 @@ module RobinCMS
 
 		class << self
 			def find(id, collection_id)
-				filename = Dir.glob(File.join($cfg.content_dir, '**', id + '.*')).first
+				pattern = File.join($cfg.content_dir, '**', id + '.*')
+				filename = Dir.glob(pattern).first
 
 				return unless filename
 
@@ -91,7 +92,8 @@ module RobinCMS
 			end
 
 			def all
-				Dir.glob(File.join($cfg.content_dir, '**/*')).map do |f|
+				pattern = File.join($cfg.content_dir, '**/*')
+				Dir.glob(pattern).map do |f|
 					next unless File.file?(f)
 
 					id = File.basename(f, '.*')
@@ -102,14 +104,6 @@ module RobinCMS
 			end
 
 			def where(collection_id: nil, sort: 'id', status: nil, q: '')
-				# Handles the case where nil is explicitly passed
-				sort ||= 'id'
-				q ||= ''
-
-				sort_by = sort.sub('-', '').to_sym
-				sort_direction = sort.start_with?('-') ? -1 : 1
-				re = Regexp.new(q, 'i')
-
 				by_collection = lambda do |i|
 					return true if collection_id.nil?
 
@@ -125,10 +119,16 @@ module RobinCMS
 				by_search = lambda do |i|
 					return true if q.nil?
 
+					re = Regexp.new(q, 'i')
 					i.fields[:title].match?(re)
 				end
 
 				by_field = lambda do |a, b|
+					return true if sort.nil?
+
+					sort_by = sort.sub('-', '').to_sym
+					sort_direction = sort.start_with?('-') ? -1 : 1
+
 					case sort_by
 					when :id
 						a.id <=> b.id

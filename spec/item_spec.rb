@@ -111,7 +111,38 @@ describe Item do
 		end.to raise_error(IOError)
 	end
 
+	it 'complains if a file with the same name of a different collection already exists' do
+		Item.create(:poem, {
+			:title => 'A poem about Ruby',
+			:author_name => 'Aron',
+			:content => '<p>This is a poem about <i>Ruby</i>.</p>'
+		})
+		expect do
+			Item.create(:article, {
+				:title => 'A poem about Ruby',
+				:author_name => 'Aron',
+				:content => '<p>This is another a poem about <i>Ruby</i>.</p>'
+			})
+		end.to raise_error(IOError)
+	end
+
+	it 'complains if a file with the same name in a different directory already exists' do
+		# Genres have location '/genres'.
+		Item.create(:poem, {
+			:title => 'A poem about Ruby',
+			:author_name => 'Aron',
+			:content => '<p>This is a poem about <i>Ruby</i>.</p>'
+		})
+		expect do
+			Item.create(:genre, { :title => 'A poem about Ruby' })
+		end.to raise_error(IOError)
+	end
+
 	it 'creates a subdirectory if it does not already exist' do
+		# Genres have location '/genres', but the directory isn't created yet.
+		expect do
+			Item.create(:genre, { :title => 'Cinematic Soul' })
+		end.not_to raise_error
 	end
 
 	it 'finds the item' do
@@ -244,8 +275,6 @@ describe Item do
 		expect(items.length).to eq(1)
 	end
 
-	# TODO - tests for sort, status, q
-
 	it 'returns an empty array if no items of a given collection are found' do
 		File.write(File.join(__dir__, 'tmp', 'a-poem-about-ruby.html'), <<~HTML)
 			---
@@ -260,6 +289,121 @@ describe Item do
 		items = Item.where(collection_id: :article)
 
 		expect(items.length).to eq(0)
+	end
+
+	it 'sorts items correctly' do
+		File.write(File.join(__dir__, 'tmp', 'aaa.html'), <<~HTML)
+			---
+			title: A poem about Ruby
+			author_name: Aron
+			created_at: '2025-01-09'
+			updated_at: '2025-01-12'
+			kind: poem
+			---
+			<p>This is a poem about <i>Ruby</i>.</p>
+		HTML
+		File.write(File.join(__dir__, 'tmp', 'bbb.html'), <<~HTML)
+			---
+			title: A poem about Haskell
+			author_name: Aron
+			created_at: '2025-01-10'
+			updated_at: '2024-01-10'
+			kind: poem
+			---
+			<p>This is a poem about <i>Haskell</i>.</p>
+		HTML
+		items = Item.where(collection_id: :poem, sort: '-updated_at')
+
+		# Due to the filenames, if sort is not specified, 'aaa.html' would
+		# appear before bbb.
+		expect(items[0].id).to eq('bbb')
+	end
+
+	it 'filters items by draft status' do
+		File.write(File.join(__dir__, 'tmp', 'a-poem-about-ruby.html'), <<~HTML)
+			---
+			title: A poem about Ruby
+			author_name: Aron
+			created_at: '2025-01-09'
+			updated_at: '2025-01-12'
+			kind: poem
+			status: published
+			---
+			<p>This is a poem about <i>Ruby</i>.</p>
+		HTML
+		File.write(File.join(__dir__, 'tmp', 'a-poem-about-haskell.html'), <<~HTML)
+			---
+			title: A poem about Haskell
+			author_name: Aron
+			created_at: '2025-01-10'
+			updated_at: '2024-01-10'
+			kind: poem
+			status: draft
+			---
+			<p>This is a poem about <i>Haskell</i>.</p>
+		HTML
+		items = Item.where(collection_id: :poem, status: 'draft')
+
+		expect(items.length).to eq(1)
+		expect(items[0].fields[:status]).to eq('draft')
+	end
+
+	it 'filters items by search query' do
+		File.write(File.join(__dir__, 'tmp', 'a-poem-about-ruby.html'), <<~HTML)
+			---
+			title: A poem about Ruby
+			author_name: Aron
+			created_at: '2025-01-09'
+			updated_at: '2025-01-12'
+			kind: poem
+			status: published
+			---
+			<p>This is a poem about <i>Ruby</i>.</p>
+		HTML
+		File.write(File.join(__dir__, 'tmp', 'a-poem-about-haskell.html'), <<~HTML)
+			---
+			title: A poem about Haskell
+			author_name: Aron
+			created_at: '2025-01-10'
+			updated_at: '2024-01-10'
+			kind: poem
+			status: draft
+			---
+			<p>This is a poem about <i>Haskell</i>.</p>
+		HTML
+		items = Item.where(collection_id: :poem, q: 'Ruby')
+
+		expect(items.length).to eq(1)
+		expect(items[0].id).to eq('a-poem-about-ruby')
+	end
+
+	it 'ignores case in search query' do
+		File.write(File.join(__dir__, 'tmp', 'a-poem-about-ruby.html'), <<~HTML)
+			---
+			title: A poem about Ruby
+			author_name: Aron
+			created_at: '2025-01-09'
+			updated_at: '2025-01-12'
+			kind: poem
+			status: published
+			---
+			<p>This is a poem about <i>Ruby</i>.</p>
+		HTML
+		File.write(File.join(__dir__, 'tmp', 'a-poem-about-haskell.html'), <<~HTML)
+			---
+			title: A poem about Haskell
+			author_name: Aron
+			created_at: '2025-01-10'
+			updated_at: '2024-01-10'
+			kind: poem
+			status: draft
+			---
+			<p>This is a poem about <i>Haskell</i>.</p>
+		HTML
+		items = Item.where(collection_id: :poem, q: 'ruby')
+
+		expect(items.length).to eq(1)
+		expect(items[0].id).to eq('a-poem-about-ruby')
 	end
 
 	it 'returns everything if collection is omitted' do
@@ -395,10 +539,4 @@ describe Item do
 
 		expect(File.exist?(File.join(__dir__, 'tmp', 'a-poem-about-ruby.html'))).to be(false)
 	end
-
-	it 'creates subdirectory for item if it does not already exist' do
-		# TODO
-	end
-
-	# TODO - status tests
 end

@@ -30,3 +30,9 @@ collections:
     fields:
       - { label: "Title", name: "title", type: "text" }
       - { label: "From", name: "from", type: "text" }
+  - name: "genre"
+    label: "Genre"
+    location: "/genres"
+    filetype: "yaml"
+    fields:
+      - { label: "Name", name: "title", type: "text" }
