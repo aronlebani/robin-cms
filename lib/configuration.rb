@@ -13,8 +13,6 @@ module RobinCMS
 	end
 
 	class FieldParser
-		include RobinCMS
-
 		ALLOWED_TYPES = [
 			'text', 'richtext', 'date', 'hidden', 'number', 'color', 'email',
 			'url', 'select'
@@ -45,8 +43,6 @@ module RobinCMS
 	end
 
 	class CollectionParser
-		include RobinCMS
-
 		ALLOWED_FILETYPES = ['html', 'yaml', nil].freeze
 		REQUIRED_ATTRS = [:name, :label].freeze
 		IMPLICIT_FIELDS = [
@@ -59,13 +55,10 @@ module RobinCMS
 				:name => 'status',
 				:type => 'select',
 				:default => 'draft',
-				:options => [{
-					:label => 'Draft',
-					:value => 'draft'
-				}, {
-					:label => 'Published',
-					:value => 'published'
-				}]
+				:options => [
+					{ :label => 'Draft', :value => 'draft' },
+					{ :label => 'Published', :value => 'published' }
+				]
 			}
 		].freeze
 
@@ -109,8 +102,6 @@ module RobinCMS
 	end
 
 	class ConfigurationParser
-		include RobinCMS
-
 		attr_reader :site_name, :content_dir, :admin_username, :admin_password,
 			:build_command, :base_route, :accent_color, :collections
 

@@ -2,6 +2,8 @@
 
 require 'uri'
 
+require_relative 'constants'
+
 module RobinCMS
 	module Helpers
 		def query_params
@@ -14,7 +16,7 @@ module RobinCMS
 		end
 
 		def status_label(value)
-			s = RobinCMS::Item::STATUS_OPTIONS.find { |o| o[:value] == value }
+			s = STATUS_OPTIONS.find { |o| o[:value] == value }
 			s[:label]
 		end
 

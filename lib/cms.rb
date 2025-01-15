@@ -31,18 +31,18 @@ module RobinCMS
 			set :accent_color, $cfg.accent_color
 		end
 
-		namespace "/#{settings.base_route}" do
-			helpers do
-				include RobinCMS::Helpers
+		helpers do
+			include RobinCMS::Helpers
 
-				def authenticated?(username, guess)
-					return false unless username == settings.admin_user
+			def authenticated?(username, guess)
+				return false unless username == settings.admin_user
 
-					hashed = BCrypt::Password.new(settings.admin_pass)
-					hashed == guess
-				end
+				hashed = BCrypt::Password.new(settings.admin_pass)
+				hashed == guess
 			end
+		end
 
+		namespace "/#{settings.base_route}" do
 			get '/login' do
 				@auth_layout = true
 				erb :login

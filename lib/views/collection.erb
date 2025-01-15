@@ -21,7 +21,7 @@
 <form id="filter-form" class="card --clear controls --align-right" action="" method="get">
 	<label class="--horizontal" for="sort">Sort</label>
 	<select id="sort" name="sort">
-		<% for option in RobinCMS::Item::SORT_OPTIONS %>
+		<% for option in RobinCMS::SORT_OPTIONS %>
 			<option
 				value="<%= option[:value] %>"
 				<% if query_params['sort'] == option[:value] %>
@@ -34,7 +34,7 @@
 	</select>
 	<label class="--horizontal" for="status">Status</label>
 	<select id="status" name="status">
-		<% for option in RobinCMS::Item::STATUS_OPTIONS%>
+		<% for option in RobinCMS::STATUS_OPTIONS%>
 			<option
 				value="<%= option[:value] %>"
 				<% if query_params['status'] == option[:value] %>
@@ -98,7 +98,7 @@
 					</td>
 				</tr>
 			<% end %>
-			<% 0.times do %>
+			<% 16.times do %>
 				<%# TODO - delete me! %>
 				<tr>
 					<td><a href="">An item</a></td>
