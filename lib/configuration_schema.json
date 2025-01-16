@@ -1,0 +1,63 @@
+{
+	"$schema": "http://json-schema.org/draft-06/schema#",
+	"title": "RobinCMS configuration schema",
+	"type": "object",
+	"required": ["collections"],
+	"properties": {
+		"site_name": { "type": "string" },
+		"content_dir": { "type": "string" },
+		"admin_username": { "type": "string" },
+		"admin_password": { "type": "string" },
+		"build_command": { "type": "string" },
+		"accent_color": {
+			"type": "string",
+			"pattern": "^\#{1}[a-fA-F0-9]{6}"
+		},
+		"collections": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"required": ["id", "label", "label_singular"],
+				"properties": {
+					"id": { "type": "string" },
+					"label": { "type": "string" },
+					"label_singular": { "type": "string" },
+					"location": { "type": "string" },
+					"filetype": { "type": "string", "enum": ["html", "yaml"] },
+					"description": { "type": "string" },
+					"can_create": { "type": "boolean" },
+					"can_delete": { "type": "boolean" },
+					"fields": {
+						"type": "array",
+						"items": {
+							"type": "object",
+							"required": ["id", "label"],
+							"properties": {
+								"id": { "type": "string" },
+								"label": { "type": "string" },
+								"type": {
+									"type": "string",
+									"enum": ["text", "richtext", "date", "hidden", "number", "color", "email", "url", "select"]
+								},
+								"default": { "type": "string" },
+								"required": { "type": "boolean" },
+								"readonly": { "type": "boolean" },
+								"options": {
+									"type": "array",
+									"items": {
+										"type": "object",
+										"required": ["label", "value"],
+										"properties": {
+											"label": { "type": "string" },
+											"value": { "type": "string" }
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}

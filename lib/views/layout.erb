@@ -388,12 +388,12 @@
 						</li>
 						<% for collection in @collections %>
 							<li
-								<% if current_collection == collection.id.to_s %>
+								<% if current_collection == collection[:id].to_s %>
 									class="current"
 								<% end %>
 							>
-								<a href="/<%= settings.base_route %>/collections/<%= collection.id %>">
-									<%= collection.label %>
+								<a href="/<%= settings.base_route %>/collections/<%= collection[:id] %>">
+									<%= collection[:label] %>
 								</a>
 							</li>
 						<% end %>

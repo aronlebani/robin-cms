@@ -1,7 +1,7 @@
 content_dir: "content"
 collections:
-  - name: "poem"
+  - id: "poem"
     location: "/"
     filetype: "html"
     fields:
-      - { label: "Title", name: "title", type: "text" }
+      - { label: "Title", id: "title", type: "text" }

@@ -27,11 +27,10 @@ accent_color: "#fd8a13"
 # A list of collections, defining the content model of your CMS.
 collections:
   - # A unique name identifying this collection.
-    name: "poem"
+    id: "poem"
     # A human-readable name for this collection. It should be a plural.
     label: "Poems"
-    # A human-readable name for this collection - singular version. Defaults to
-    # label.
+    # A human-readable name for this collection - singular version.
     label_singular: "Poem"
     # The location within `content_dir` to store files of this collection. If
     # omitted, it will default to "/".
@@ -62,22 +61,22 @@ collections:
     # - required: make the field required when set to `true`
     # - readonly: make the field readonly when set to `true`
     fields:
-      - { label: "Title", name: "title", type: "text" }
-      - { label: "Author", name: "author_name", type: "text" }
-      - { label: "Content", name: "content", type: "richtext" }
-  - name: "book"
+      - { label: "Title", id: "title", type: "text" }
+      - { label: "Author", id: "author_name", type: "text" }
+      - { label: "Content", id: "content", type: "richtext" }
+  - id: "book"
     label: "Books"
     label_singular: "Book"
     filetype: "yaml"
     description: "A list of books."
     fields:
-      - { label: "Author", name: "author_name", type: "text" }
-  - name: "record"
+      - { label: "Author", id: "author_name", type: "text" }
+  - id: "record"
     label: "Records"
     label_singular: "Record"
     location: "/records"
     filetype: "yaml"
     description: "A list of records."
     fields:
-      - { label: "Artist", name: "artist", type: "text" }
-      - { label: "Genre", name: "genre", type: "text" }
+      - { label: "Artist", id: "artist", type: "text" }
+      - { label: "Genre", id: "genre", type: "text" }

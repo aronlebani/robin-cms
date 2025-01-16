@@ -30,6 +30,7 @@ Gem::Specification.new do |spec|
 	spec.require_paths = ['lib']
 
 	gem 'bcrypt'
+	gem 'json-schema'
 	gem 'rackup'
 	gem 'sinatra'
 	gem 'sinatra-contrib'

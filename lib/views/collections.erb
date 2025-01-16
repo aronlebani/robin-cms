@@ -20,19 +20,19 @@
 	<tbody class="card">
 		<% for collection in @collections %>
 			<tr>
-				<td><%= collection.label %></td>
+				<td><%= collection[:label] %></td>
 				<td>
-					<%= @all_items.filter { |item| item.fields[:kind] == collection.id }.count %>
+					<%= @all_items.filter { |item| item.fields[:kind] == collection[:id] }.count %>
 				</td>
 				<td>
-					<a href="/<%= settings.base_route %>/collections/<%= collection.id %>">
-						View <%= collection.label %>
+					<a href="/<%= settings.base_route %>/collections/<%= collection[:id] %>">
+						View <%= collection[:label] %>
 					</a>
 				</td>
 				<td>
-					<% if collection.can_create %>
-						<a href="/<%= settings.base_route %>/collections/<%= collection.id %>/item">
-							New <%= collection.label_singular %>
+					<% if collection[:can_create] %>
+						<a href="/<%= settings.base_route %>/collections/<%= collection[:id] %>/item">
+							New <%= collection[:label_singular] %>
 						</a>
 					<% end %>
 				</td>

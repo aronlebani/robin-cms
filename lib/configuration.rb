@@ -1,58 +1,45 @@
 # frozen_string_literal: true
 
+require 'json'
+require 'json-schema'
+require 'ostruct'
 require 'yaml'
 
 module RobinCMS
-	class ParseError < StandardError
-		DEFAULT_MSG = 'Error parsing configuration.'
+	module Configuration
+		DEFAULT_CONFIG = {
+			:site_name => 'RobinCMS',
+			:content_dir => 'content',
+			:admin_username => 'admin',
+			:admin_password => 'admin',
+			:build_command => nil,
+			:accent_color => '#fd8a13'
+		}.freeze
 
-		def initialize(msg = nil)
-			msg = if msg then "#{DEFAULT_MSG} #{msg}" else DEFUALT_MSG end
-			super(msg)
-		end
-	end
+		DEFAULT_COLLECTION_CONFIG = {
+			:location => '/',
+			:filetype => 'html',
+			:description => '',
+			:can_create => true,
+			:can_delete => true,
+			:fields => []
+		}.freeze
 
-	class FieldParser
-		ALLOWED_TYPES = [
-			'text', 'richtext', 'date', 'hidden', 'number', 'color', 'email',
-			'url', 'select'
-		].freeze
-		REQUIRED_ATTRS = [:name, :label, :type].freeze
+		DEFAULT_FIELD_CONFIG = {
+			:type => 'text',
+			:default => nil,
+			:required => false,
+			:readonly => false
+		}.freeze
 
-		attr_reader :id, :label, :type, :default, :required, :readonly, :options
-
-		def initialize(config)
-			unless ALLOWED_TYPES.include?(config[:type])
-				raise ParseError, "Invalid field type #{config[:type]}."
-			end
-
-			unless REQUIRED_ATTRS.all? { |attr| config.keys.include?(attr) }
-				raise ParseError, "Field missing one or more required attributes #{REQUIRED_ATTRS.join(', ')} for field #{config[:name]}."
-			end
-
-			# TODO - validate options array
-
-			@id = config[:name].to_sym
-			@label = config[:label]
-			@type = config[:type]
-			@default = config[:default] || ''
-			@required = config[:required] || false
-			@readonly = config[:readonly] || false
-			@options = config[:options] || []
-		end
-	end
-
-	class CollectionParser
-		ALLOWED_FILETYPES = ['html', 'yaml', nil].freeze
-		REQUIRED_ATTRS = [:name, :label].freeze
 		IMPLICIT_FIELDS = [
-			{ :label => 'Title', :name => 'title', :type => 'text' },
-			{ :label => 'Collection', :name => 'kind', :type => 'hidden' },
-			{ :label => 'Published date', :name => 'created_at', :type => 'hidden' },
-			{ :label => 'Last edited', :name => 'updated_at', :type => 'hidden' },
+			{ :label => 'Title', :id => 'title', :type => 'text' },
+			{ :label => 'Collection', :id => 'kind', :type => 'hidden' },
+			{ :label => 'Published date', :id => 'created_at', :type => 'hidden' },
+			{ :label => 'Last edited', :id => 'updated_at', :type => 'hidden' },
 			{
 				:label => 'Status',
-				:name => 'status',
+				:id => 'status',
 				:type => 'select',
 				:default => 'draft',
 				:options => [
@@ -62,65 +49,68 @@ module RobinCMS
 			}
 		].freeze
 
-		attr_reader :id, :label, :label_singular, :location, :filetype,
-			:description, :can_delete, :can_create, :fields
-
-		def initialize(config)
-			unless ALLOWED_FILETYPES.include?(config[:filetype])
-				raise ParseError, "Invalid filetype #{config[:filetype]}."
+		class ValidationError < StandardError
+			def initialize(message)
+				super(message)
 			end
-
-			unless REQUIRED_ATTRS.all? { |attr| config.keys.include?(attr) }
-				raise ParseError, "Collection missing one or more required attributes #{REQUIRED_ATTRS.join(', ')} for collection #{config[:name]}."
-			end
-
-			if config[:fields].filter { |f| f[:type] == 'richtext' }.length > 1
-				raise ParseError, 'Only one richtext field per collection is permitted.'
-			end
-
-			@id = config[:name].to_sym
-			@label = config[:label]
-			@label_singular = config[:label_singular] || config[:label]
-			@location = config[:location] || '/'
-			@filetype = config[:filetype] || 'html'
-			@description = config[:description]
-			@can_create = config[:can_create].nil? ? true : config[:can_create]
-			@can_delete = config[:can_delete].nil? ? true : config[:can_delete]
-			@fields = (config[:fields] || [])
-				.concat(IMPLICIT_FIELDS)
-				.uniq { |f| f[:name] }
-				.map { |f| FieldParser.new(f) }
 		end
 
-		def ordered_fields
-			title_field = @fields.find { |f| f.id == :title }
-			status_field = @fields.find { |f| f.id == :status }
-			remaining_fields = @fields.filter { |f| f.id != :title && f.id != :status }
-
-			[title_field, status_field, *remaining_fields]
+		def merge_default_values(config)
+			config[:collections] = config[:collections].map do |collection|
+				collection[:fields] = collection[:fields].map do |field|
+					DEFAULT_FIELD_CONFIG.merge(field)
+				end
+				DEFAULT_COLLECTION_CONFIG.merge(collection)
+			end
+			DEFAULT_CONFIG.merge(config)
 		end
-	end
 
-	class ConfigurationParser
-		attr_reader :site_name, :content_dir, :admin_username, :admin_password,
-			:build_command, :base_route, :accent_color, :collections
+		def merge_implicit_fields(config)
+			config[:collections].each do |collection|
+				collection[:fields] = collection[:fields]
+					.concat(IMPLICIT_FIELDS)
+					.uniq { |f| f[:id] }
+			end
 
-		def initialize(filename)
+			config
+		end
+
+		def merge_environment(config)
+			env_admin_password =
+				ENV.has_key?('ADMIN_PASS') && ENV.fetch('ADMIN_PASS')
+			env_admin_username =
+				ENV.has_key?('ADMIN_PASS') && ENV.fetch('ADMIN_USER')
+
+			config[:admin_password] ||= env_admin_password
+			config[:admin_username] ||= env_admin_username
+
+			config
+		end
+
+		def validate_custom!(config)
+			config[:collections].each do |c|
+				if c[:fields].filter { |f| f[:type] == 'richtext' }.length > 1
+					raise ValidationError, 'Only one richtext field per collection allowed'
+				end
+			end
+		end
+
+		def parse(filename)
 			config = YAML.load_file(filename, symbolize_names: true)
 
-			if !config[:collections] || config[:collections].length == 0
-				raise ParseError, "At least one collection is required."
-			end
+			schema_file = File.join(__dir__, 'configuration_schema.json')
+			schema = JSON.parse(File.read(schema_file))
+			JSON::Validator.validate!(schema, config)
 
-			@site_name = config[:site_name] || 'RobinCMS'
-			@content_dir = config[:content_dir] || 'content'
-			@admin_username = ENV['ADMIN_USER'] || config[:admin_username] || 'admin'
-			@admin_password = ENV['ADMIN_PASS'] || config[:admin_password] || 'admin'
-			@build_command = config[:build_command] || nil
-			@base_route = config[:base_route] || 'admin'
-			@accent_color = config[:accent_color] || '#fd8a13'
+			validate_custom!(config)
 
-			@collections = config[:collections].map { |c| CollectionParser.new(c) }
+			config = merge_default_values(config)
+			config = merge_implicit_fields(config)
+			config = merge_environment(config)
+			config.freeze
 		end
+
+		module_function :parse, :merge_default_values, :merge_implicit_fields,
+			:merge_environment, :validate_custom!
 	end
 end

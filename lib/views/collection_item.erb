@@ -1,15 +1,15 @@
 <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
 
 <header class="card">
-	<h2><%= @item.id ? 'Edit' : 'New' %> <%= @collection.label_singular.downcase %></h2>
+	<h2><%= @item.id ? 'Edit' : 'New' %> <%= @collection[:label_singular].downcase %></h2>
 	<span class="controls">
-		<a href="/<%= settings.base_route %>/collections/<%= @collection.id %>">Back</a>
-		<% if @collection.can_delete && @item.id %>
+		<a href="/<%= settings.base_route %>/collections/<%= @collection[:id] %>">Back</a>
+		<% if @collection[:can_delete] && @item.id %>
 			<%= erb :dialog, locals: {
 				id: "delete#{@item.id}",
 				heading: "Delete #{@item.fields[:title]}?",
 				body: "Are you sure you want to delete #{@item.fields[:title]}?",
-				action: "/#{settings.base_route}/collections/#{@collection.id}/item/delete?id=#{@item.id}",
+				action: "/#{settings.base_route}/collections/#{@collection[:id]}/item/delete?id=#{@item.id}",
 				button_label: 'Delete',
 				danger: true
 			} %>
@@ -19,36 +19,36 @@
 <form
 	class="card"
 	<% if @item.id %>
-		action="/<%= settings.base_route %>/collections/<%= @collection.id %>/item?id=<%= @item.id %>"
+		action="/<%= settings.base_route %>/collections/<%= @collection[:id] %>/item?id=<%= @item.id %>"
 	<% else %>
-		action="/<%= settings.base_route %>/collections/<%= @collection.id %>/item"
+		action="/<%= settings.base_route %>/collections/<%= @collection[:id] %>/item"
 	<% end %>
 	method="post"
 >
-	<% for field in @collection.ordered_fields %>
+	<% for field in ordered_fields(@collection) %>
 		<div class="field">
-			<% unless field.type == 'hidden' %>
-				<label for="<%= safe_id(field.id, 'field') %>"><%= field.label %></label>
+			<% unless field[:type] == 'hidden' %>
+				<label for="<%= safe_id(field[:id], 'field') %>"><%= field[:label] %></label>
 			<% end %>
-			<% if ['text', 'date', 'number', 'hidden', 'color', 'email', 'url'].include?(field.type) %>
+			<% if ['text', 'date', 'number', 'hidden', 'color', 'email', 'url'].include?(field[:type]) %>
 				<input
-					id="<%= safe_id(field.id, 'field') %>"
-					type="<%= field.type %>"
-					name="<%= field.id %>"
-					value="<%= @item.fields[field.id] || field.default %>"
-					<% if field.required %>required<% end %>
-					<% if field.readonly %>readonly<% end %>
+					id="<%= safe_id(field[:id], 'field') %>"
+					type="<%= field[:type] %>"
+					name="<%= field[:id] %>"
+					value="<%= @item.fields[field[:id]] || field[:default] %>"
+					<% if field[:required] %>required<% end %>
+					<% if field[:readonly] %>readonly<% end %>
 				/>
-			<% elsif field.type == 'select' %>
+			<% elsif field[:type] == 'select' %>
 				<select
-					id="<%= safe_id(field.id, 'field') %>"
-					name="<%= field.id %>"
-					value="<%= @item.fields[field.id] || field.default %>"
+					id="<%= safe_id(field[:id], 'field') %>"
+					name="<%= field[:id] %>"
+					value="<%= @item.fields[field[:id]] || field[:default] %>"
 				>
-					<% for option in field.options %>
+					<% for option in field[:options] %>
 						<option
 							value="<%= option[:value] %>"
-							<% if option[:value] == (@item.fields[field.id] || field.default) %>
+							<% if option[:value] == (@item.fields[field[:id]] || field[:default]) %>
 								selected
 							<% end %>
 						>
@@ -56,7 +56,7 @@
 						</option>
 					<% end %>
 				</select>
-			<% elsif field.type == 'richtext' %>
+			<% elsif field[:type] == 'richtext' %>
 				<div id="toolbar">
 					<span class="ql-formats">
 						<button class="ql-bold"></button>
@@ -84,7 +84,7 @@
 				<input
 					id="richtext-content"
 					type="hidden"
-					name="<%= field.id %>"
+					name="<%= field[:id] %>"
 					value=""
 				/>
 			<% else %>
@@ -96,7 +96,7 @@
 		<small class="--danger"><%= flash[:error] %></small>
 	<% end %>
 	<footer class="controls --align-right">
-		<button type="submit">Save <%= @collection.label_singular.downcase %></button>
+		<button type="submit">Save <%= @collection[:label_singular].downcase %></button>
 	</footer>
 </form>
 

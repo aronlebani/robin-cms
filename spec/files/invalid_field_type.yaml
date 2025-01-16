@@ -1,8 +1,9 @@
 content_dir: "content"
 collections:
-  - name: "poem"
-    label: "Poem"
+  - id: "poem"
+    label: "Poems"
+    label_singular: "Poem"
     location: "/"
     filetype: "html"
     fields:
-      - { label: "Author", name: "author_name", type: "barney" }
+      - { label: "Author", id: "author_name", type: "barney" }

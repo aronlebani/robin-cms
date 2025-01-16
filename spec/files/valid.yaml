@@ -1,17 +1,19 @@
 content_dir: "content"
 collections:
-  - name: "poem"
-    label: "Poem"
+  - id: "poem"
+    label: "Poems"
+    label_singular: "Poem"
     location: "/"
     filetype: "html"
     fields:
-      - { label: "My title", name: "title", type: "text" }
-      - { label: "Author", name: "author_name", type: "text" }
-      - { label: "Content", name: "content", type: "richtext" }
-  - name: "song"
-    label: "Song"
+      - { label: "My title", id: "title", type: "text" }
+      - { label: "Author", id: "author_name", type: "text" }
+      - { label: "Content", id: "content", type: "richtext" }
+  - id: "song"
+    label: "Songs"
+    label_singular: "Song"
     location: "/songs"
     filetype: "yaml"
     fields:
-      - { label: "Artist", name: "artist", type: "text" }
-      - { label: "Genre", name: "genre", type: "text" }
+      - { label: "Artist", id: "artist", type: "text" }
+      - { label: "Genre", id: "genre", type: "text" }

@@ -10,9 +10,9 @@ module RobinCMS
 		def initialize(id, collection_id, fields = {})
 			@id = id
 			@fields = fields
-			@collection = $cfg.collections.find { |c| c.id == collection_id.to_sym }
+			@collection = $cfg[:collections].find { |c| c[:id] == collection_id }
 
-			@fields[:kind] = collection_id.to_sym
+			@fields[:kind] = collection_id
 		end
 
 		def fields=(fields)
@@ -22,7 +22,7 @@ module RobinCMS
 		def save
 			raise IOError, 'An item with the same name already exists' if exist?
 
-			FileUtils.mkdir_p(File.join($cfg.content_dir, @collection.location))
+			FileUtils.mkdir_p(File.join($cfg[:content_dir], @collection[:location]))
 
 			timestamp = Time.now.strftime(DATETIME_FORMAT)
 			@fields[:created_at] = timestamp
@@ -46,7 +46,7 @@ module RobinCMS
 
 		class << self
 			def find(id, collection_id)
-				pattern = File.join($cfg.content_dir, '**', id + '.*')
+				pattern = File.join($cfg[:content_dir], '**', id + '.*')
 				filename = Dir.glob(pattern).first
 
 				return unless filename
@@ -55,13 +55,13 @@ module RobinCMS
 				content = File.read(filename)
 				item = deserialize(id, ext, content)
 
-				return unless item.fields[:kind] == collection_id.to_sym
+				return unless item.fields[:kind] == collection_id
 
 				item
 			end
 
 			def all
-				pattern = File.join($cfg.content_dir, '**/*')
+				pattern = File.join($cfg[:content_dir], '**/*')
 				Dir.glob(pattern).map do |f|
 					next unless File.file?(f)
 
@@ -76,7 +76,7 @@ module RobinCMS
 				by_collection = lambda do |i|
 					return true if collection_id.nil?
 
-					i.fields[:kind] == collection_id.to_sym
+					i.fields[:kind] == collection_id
 				end
 
 				by_status = lambda do |i|
@@ -146,14 +146,14 @@ module RobinCMS
 		private
 
 		def filename
-			raise ArgumentError, 'Missing Item Id' unless @id && @collection.id
+			raise ArgumentError, 'Missing Item Id' unless @id && @collection[:id]
 
-			filename = "#{@id}.#{@collection.filetype}"
-			File.join($cfg.content_dir, @collection.location, filename)
+			filename = "#{@id}.#{@collection[:filetype]}"
+			File.join($cfg[:content_dir], @collection[:location], filename)
 		end
 
 		def exist?
-			pattern = File.join($cfg.content_dir, '**', @id + '.*')
+			pattern = File.join($cfg[:content_dir], '**', @id + '.*')
 			Dir.glob(pattern).length >= 1
 		end
 
@@ -161,7 +161,7 @@ module RobinCMS
 			frontmatter = @fields
 			frontmatter.delete(:id)
 			frontmatter.delete(:c_id)
-			frontmatter[:kind] = frontmatter[:kind].to_s
+			frontmatter[:kind] = frontmatter[:kind]
 
 			# The Psych module (for which YAML is an alias) has a
 			# stringify_names option which does exactly this. However it was
@@ -169,7 +169,7 @@ module RobinCMS
 			# to support earlier versions of Ruby.
 			frontmatter = frontmatter.to_h.transform_keys(&:to_s)
 
-			case @collection.filetype
+			case @collection[:filetype]
 			when 'html'
 				content = frontmatter['content']
 				frontmatter.delete('content')

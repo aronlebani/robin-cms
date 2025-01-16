@@ -26,5 +26,15 @@ module RobinCMS
 			id = id.to_s.gsub('-', '_').gsub(/\W+/, '')
 			"__#{prefix}_#{id}"
 		end
+
+		def ordered_fields(collection)
+			fields = collection[:fields]
+
+			title_field = fields.find { |f| f[:id] == 'title' }
+			status_field = fields.find { |f| f[:id] == 'status' }
+			remaining_fields = fields.filter { |f| f[:id] != 'title' && f[:id] != 'status' }
+
+			[title_field, status_field, *remaining_fields]
+		end
 	end
 end

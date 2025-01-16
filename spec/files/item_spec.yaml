@@ -1,38 +1,43 @@
 content_dir: "spec/tmp"
 collections:
-  - name: "poem"
-    label: "Poem"
+  - id: "poem"
+    label: "Poems"
+    label_singular: "Poem"
     location: "/"
     filetype: "html"
     fields:
-      - { label: "Title", name: "title", type: "text" }
-      - { label: "Author", name: "author_name", type: "text" }
-      - { label: "Content", name: "content", type: "richtext" }
-  - name: "article"
-    label: "Article"
+      - { label: "Title", id: "title", type: "text" }
+      - { label: "Author", id: "author_name", type: "text" }
+      - { label: "Content", id: "content", type: "richtext" }
+  - id: "article"
+    label: "Articles"
+    label_singular: "Article"
     location: "/"
     filetype: "html"
     fields:
-      - { label: "Title", name: "title", type: "text" }
-      - { label: "Author", name: "author_name", type: "text" }
-      - { label: "Content", name: "content", type: "richtext" }
-  - name: "song"
-    label: "Song"
+      - { label: "Title", id: "title", type: "text" }
+      - { label: "Author", id: "author_name", type: "text" }
+      - { label: "Content", id: "content", type: "richtext" }
+  - id: "song"
+    label: "Songs"
+    label_singular: "Song"
     location: "/"
     filetype: "yaml"
     fields:
-      - { label: "Title", name: "title", type: "text" }
-      - { label: "Artist", name: "artist_name", type: "text" }
-  - name: "artist"
-    label: "Artist"
+      - { label: "Title", id: "title", type: "text" }
+      - { label: "Artist", id: "artist_name", type: "text" }
+  - id: "artist"
+    label: "Artists"
+    label_singular: "Artist"
     location: "/artists"
     filetype: "yaml"
     fields:
-      - { label: "Title", name: "title", type: "text" }
-      - { label: "From", name: "from", type: "text" }
-  - name: "genre"
-    label: "Genre"
+      - { label: "Title", id: "title", type: "text" }
+      - { label: "From", id: "from", type: "text" }
+  - id: "genre"
+    label: "Genres"
+    label_singular: "Genre"
     location: "/genres"
     filetype: "yaml"
     fields:
-      - { label: "Name", name: "title", type: "text" }
+      - { label: "Name", id: "title", type: "text" }
