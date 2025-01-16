@@ -19,19 +19,22 @@ module RobinCMS
 		configure do
 			$cfg = Configuration.parse('robin.yaml')
 
-			set :sessions, true
+			session_secret = if ENV.has_key?('SESSION_SECRET')
+				ENV.fetch('SESSION_SECRET')
+			else
+				SecureRandom.hex(64)
+			end
+
 			set :logging, true
-			set :session_secret, (ENV.has_key?('SESSION_SECRET') && ENV.fetch('SESSION_SECRET')) || SecureRandom.hex(64)
-			set :views, File.join(__dir__, 'views')
+			set :sessions, true
+			set :session_secret, session_secret
 			set :admin_user, $cfg[:admin_username]
 			set :admin_pass, BCrypt::Password.create($cfg[:admin_password])
-
-			# TODO: reference these directly from config instead of putting them
-			# in settings.
 			set :build_command, $cfg[:build_command]
 			set :base_route, $cfg[:base_route]
 			set :site_name, $cfg[:site_name]
 			set :accent_color, $cfg[:accent_color]
+			set :collections, $cfg[:collections]
 		end
 
 		helpers do
@@ -67,15 +70,13 @@ module RobinCMS
 			end
 
 			get '/collections' do
-				@collections = $cfg[:collections]
 				@all_items = Item.all
 
 				erb :collections
 			end
 
 			get '/collections/:c_id' do
-				@collections = $cfg[:collections]
-				@collection = $cfg[:collections].find { |c| c[:id] == params[:c_id] }
+				@collection = settings.collections.find { |c| c[:id] == params[:c_id] }
 				@items = Item.where(
 					collection_id: params[:c_id],
 					sort: params[:sort],
@@ -87,8 +88,7 @@ module RobinCMS
 			end
 
 			get '/collections/:c_id/item' do
-				@collections = $cfg[:collections]
-				@collection = $cfg[:collections].find { |c| c[:id] == params[:c_id] }
+				@collection = settings.collections.find { |c| c[:id] == params[:c_id] }
 
 				if params[:id]
 					@item = Item.find(params[:id], params[:c_id])

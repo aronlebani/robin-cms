@@ -37,16 +37,10 @@ module RobinCMS
 			{ :label => 'Collection', :id => 'kind', :type => 'hidden' },
 			{ :label => 'Published date', :id => 'created_at', :type => 'hidden' },
 			{ :label => 'Last edited', :id => 'updated_at', :type => 'hidden' },
-			{
-				:label => 'Status',
-				:id => 'status',
-				:type => 'select',
-				:default => 'draft',
-				:options => [
-					{ :label => 'Draft', :value => 'draft' },
-					{ :label => 'Published', :value => 'published' }
-				]
-			}
+			{ :label => 'Status', :id => 'status', :type => 'select', :default => 'draft', :options => [
+				{ :label => 'Draft', :value => 'draft' },
+				{ :label => 'Published', :value => 'published' }
+			] }
 		].freeze
 
 		class ValidationError < StandardError
@@ -55,62 +49,65 @@ module RobinCMS
 			end
 		end
 
-		def merge_default_values(config)
-			config[:collections] = config[:collections].map do |collection|
-				collection[:fields] = collection[:fields].map do |field|
-					DEFAULT_FIELD_CONFIG.merge(field)
+		class << self
+			def parse(filename)
+				config = YAML.load_file(filename, symbolize_names: true)
+
+				schema_file = File.join(__dir__, 'configuration_schema.json')
+				schema = JSON.parse(File.read(schema_file))
+				JSON::Validator.validate!(schema, config)
+
+				validate_custom!(config)
+
+				config = with_default_values(config)
+				config = with_implicit_fields(config)
+				config = with_environment(config)
+				config.freeze
+			end
+
+			private
+
+			def with_default_values(config)
+				config[:collections] = config[:collections].map do |collection|
+					collection[:fields] = collection[:fields].map do |field|
+						DEFAULT_FIELD_CONFIG.merge(field)
+					end
+					DEFAULT_COLLECTION_CONFIG.merge(collection)
 				end
-				DEFAULT_COLLECTION_CONFIG.merge(collection)
-			end
-			DEFAULT_CONFIG.merge(config)
-		end
-
-		def merge_implicit_fields(config)
-			config[:collections].each do |collection|
-				collection[:fields] = collection[:fields]
-					.concat(IMPLICIT_FIELDS)
-					.uniq { |f| f[:id] }
+				DEFAULT_CONFIG.merge(config)
 			end
 
-			config
-		end
+			def with_implicit_fields(config)
+				config[:collections].each do |collection|
+					collection[:fields] = collection[:fields]
+						.concat(IMPLICIT_FIELDS)
+						.uniq { |f| f[:id] }
+				end
 
-		def merge_environment(config)
-			env_admin_password =
-				ENV.has_key?('ADMIN_PASS') && ENV.fetch('ADMIN_PASS')
-			env_admin_username =
-				ENV.has_key?('ADMIN_PASS') && ENV.fetch('ADMIN_USER')
+				config
+			end
 
-			config[:admin_password] ||= env_admin_password
-			config[:admin_username] ||= env_admin_username
+			def with_environment(config)
+				env_admin_password =
+					ENV.has_key?('ADMIN_PASS') && ENV.fetch('ADMIN_PASS')
+				env_admin_username =
+					ENV.has_key?('ADMIN_PASS') && ENV.fetch('ADMIN_USER')
 
-			config
-		end
+				config[:admin_password] ||= env_admin_password
+				config[:admin_username] ||= env_admin_username
 
-		def validate_custom!(config)
-			config[:collections].each do |c|
-				if c[:fields].filter { |f| f[:type] == 'richtext' }.length > 1
-					raise ValidationError, 'Only one richtext field per collection allowed'
+				config
+			end
+
+			# Provides custom validation which can't be expressed using the
+			# Json Schema standard.
+			def validate_custom!(config)
+				config[:collections].each do |c|
+					if c[:fields].filter { |f| f[:type] == 'richtext' }.length > 1
+						raise ValidationError, 'Only one richtext field per collection allowed'
+					end
 				end
 			end
 		end
-
-		def parse(filename)
-			config = YAML.load_file(filename, symbolize_names: true)
-
-			schema_file = File.join(__dir__, 'configuration_schema.json')
-			schema = JSON.parse(File.read(schema_file))
-			JSON::Validator.validate!(schema, config)
-
-			validate_custom!(config)
-
-			config = merge_default_values(config)
-			config = merge_implicit_fields(config)
-			config = merge_environment(config)
-			config.freeze
-		end
-
-		module_function :parse, :merge_default_values, :merge_implicit_fields,
-			:merge_environment, :validate_custom!
 	end
 end

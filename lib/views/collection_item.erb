@@ -35,7 +35,7 @@
 					id="<%= safe_id(field[:id], 'field') %>"
 					type="<%= field[:type] %>"
 					name="<%= field[:id] %>"
-					value="<%= @item.fields[field[:id]] || field[:default] %>"
+					value="<%= @item.fields[field[:id].to_sym] || field[:default] %>"
 					<% if field[:required] %>required<% end %>
 					<% if field[:readonly] %>readonly<% end %>
 				/>

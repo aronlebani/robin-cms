@@ -386,7 +386,7 @@
 						>
 							<a href="/<%= settings.base_route %>/collections">Dashboard</a>
 						</li>
-						<% for collection in @collections %>
+						<% for collection in settings.collections %>
 							<li
 								<% if current_collection == collection[:id].to_s %>
 									class="current"

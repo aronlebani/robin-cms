@@ -7,6 +7,9 @@ module RobinCMS
 		attr_accessor :fields
 		attr_reader :id, :collection
 
+		# TODO: change `fields` to `attributes` so it's not confused with collection
+		# fields.
+
 		def initialize(id, collection_id, fields = {})
 			@id = id
 			@fields = fields
