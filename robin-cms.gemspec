@@ -36,11 +36,6 @@ Gem::Specification.new do |spec|
 	gem 'sinatra-contrib'
 	gem 'sinatra-flash'
 
-	group :development do
-		gem 'puma'
-		gem 'rspec'
-	end
-
 	# For more information and examples about making a new gem, check out our
 	# guide at: https://bundler.io/guides/creating_gem.html
 end

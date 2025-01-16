@@ -11,7 +11,7 @@ module RobinCMS
 		end
 
 		def current_collection
-			_, base_route, collections, item = request.path_info.split('/')
+			_, _, collections, item = request.path_info.split('/')
 			item || collections
 		end
 

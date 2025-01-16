@@ -43,17 +43,13 @@ module RobinCMS
 			] }
 		].freeze
 
-		class ValidationError < StandardError
-			def initialize(message)
-				super(message)
-			end
-		end
+		class ValidationError < StandardError; end
 
 		class << self
 			def parse(filename)
 				config = YAML.load_file(filename, symbolize_names: true)
 
-				schema_file = File.join(__dir__, 'configuration_schema.json')
+				schema_file = File.join(__dir__, 'configuration-schema.json')
 				schema = JSON.parse(File.read(schema_file))
 				JSON::Validator.validate!(schema, config)
 

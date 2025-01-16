@@ -16,6 +16,8 @@ module RobinCMS
 		register Sinatra::Flash
 		register Sinatra::Namespace
 
+		# TODO: pull logic out of views and put it in the controllers
+
 		configure do
 			$cfg = Configuration.parse('robin.yaml')
 
