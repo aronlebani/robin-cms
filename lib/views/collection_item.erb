@@ -7,8 +7,8 @@
 		<% if @collection[:can_delete] && @item.id %>
 			<%= erb :dialog, locals: {
 				id: "delete#{@item.id}",
-				heading: "Delete #{@item.fields[:title]}?",
-				body: "Are you sure you want to delete #{@item.fields[:title]}?",
+				heading: "Delete #{@item.attributes[:title]}?",
+				body: "Are you sure you want to delete #{@item.attributes[:title]}?",
 				action: "/#{settings.base_route}/collections/#{@collection[:id]}/item/delete?id=#{@item.id}",
 				button_label: 'Delete',
 				danger: true
@@ -35,7 +35,7 @@
 					id="<%= safe_id(field[:id], 'field') %>"
 					type="<%= field[:type] %>"
 					name="<%= field[:id] %>"
-					value="<%= @item.fields[field[:id].to_sym] || field[:default] %>"
+					value="<%= @item.attributes[field[:id].to_sym] || field[:default] %>"
 					<% if field[:required] %>required<% end %>
 					<% if field[:readonly] %>readonly<% end %>
 				/>
@@ -43,12 +43,12 @@
 				<select
 					id="<%= safe_id(field[:id], 'field') %>"
 					name="<%= field[:id] %>"
-					value="<%= @item.fields[field[:id]] || field[:default] %>"
+					value="<%= @item.attributes[field[:id]] || field[:default] %>"
 				>
 					<% for option in field[:options] %>
 						<option
 							value="<%= option[:value] %>"
-							<% if option[:value] == (@item.fields[field[:id]] || field[:default]) %>
+							<% if option[:value] == (@item.attributes[field[:id]] || field[:default]) %>
 								selected
 							<% end %>
 						>
@@ -80,7 +80,7 @@
 						<button class="ql-list" value="bullet"></button>
 					</span>
 				</div>
-				<div id="editor"><%= @item.fields[:content] %></div>
+				<div id="editor"><%= @item.attributes[:content] %></div>
 				<input
 					id="richtext-content"
 					type="hidden"

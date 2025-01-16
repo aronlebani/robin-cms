@@ -28,8 +28,8 @@ module RobinCMS
 			set :logging, true
 			set :sessions, true
 			set :session_secret, session_secret
-			set :admin_user, $cfg[:admin_username]
 			set :admin_pass, BCrypt::Password.create($cfg[:admin_password])
+			set :admin_user, $cfg[:admin_username]
 			set :build_command, $cfg[:build_command]
 			set :base_route, $cfg[:base_route]
 			set :site_name, $cfg[:site_name]
@@ -107,7 +107,7 @@ module RobinCMS
 
 					return 404 unless @item
 
-					@item.fields = params
+					@item.attributes = params
 					@item.update
 				else
 					begin

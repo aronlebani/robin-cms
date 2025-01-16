@@ -82,19 +82,19 @@
 				<tr>
 					<td>
 						<a href="/<%= settings.base_route %>/collections/<%= @collection[:id] %>/item?id=<%= item.id %>">
-							<%= item.fields[:title] %>
+							<%= item.attributes[:title] %>
 						</a>
 					</td>
 					<td>
-						<small class="badge --<%= item.fields[:status] %>">
-							<%= status_label(item.fields[:status]) %>
+						<small class="badge --<%= item.attributes[:status] %>">
+							<%= status_label(item.attributes[:status]) %>
 						</small>
 					</td>
 					<td>
-						<%= Time.parse(item.fields[:created_at]).strftime('%b %d, %Y') %>
+						<%= Time.parse(item.attributes[:created_at]).strftime('%b %d, %Y') %>
 					</td>
 					<td>
-						<%= Time.parse(item.fields[:updated_at]).strftime('%b %d, %Y') %>
+						<%= Time.parse(item.attributes[:updated_at]).strftime('%b %d, %Y') %>
 					</td>
 				</tr>
 			<% end %>

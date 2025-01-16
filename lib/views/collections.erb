@@ -22,7 +22,7 @@
 			<tr>
 				<td><%= collection[:label] %></td>
 				<td>
-					<%= @all_items.filter { |item| item.fields[:kind] == collection[:id] }.count %>
+					<%= @all_items.filter { |item| item.attributes[:kind] == collection[:id] }.count %>
 				</td>
 				<td>
 					<a href="/<%= settings.base_route %>/collections/<%= collection[:id] %>">

@@ -46,7 +46,7 @@ describe Item do
 		expect(File.exist?(File.join(__dir__, 'tmp', 'a-poem-about-ruby.html'))).to be(true)
 	end
 
-	it 'creates a new html item with the correct fields' do
+	it 'creates a new html item with the correct attributes' do
 		Item.create('poem', {
 			:title => 'A poem about Ruby',
 			:author_name => 'Aron',
@@ -66,7 +66,7 @@ describe Item do
 		 .and end_with('<p>This is a poem about <i>Ruby</i>.</p>')
 	end
 
-	it 'creates a new yaml item with the correct fields' do
+	it 'creates a new yaml item with the correct attributes' do
 		Item.create('song', {
 			:title => 'All News Is Good News',
 			:artist_name => 'Surprise Chef'
@@ -161,7 +161,7 @@ describe Item do
 		expect(item).not_to be(nil)
 	end
 
-	it 'finds the html item with the correct fields' do
+	it 'finds the html item with the correct attributes' do
 		File.write(File.join(__dir__, 'tmp', 'a-poem-about-ruby.html'), <<~HTML)
 			---
 			title: A poem about Ruby
@@ -176,7 +176,7 @@ describe Item do
 
 		expect(item.id).to eq('a-poem-about-ruby')
 		expect(item.collection[:id]).to eq('poem')
-		expect(item.fields).to include(
+		expect(item.attributes).to include(
 			:title => 'A poem about Ruby',
 			:author_name => 'Aron',
 			:created_at => '2024-12-23',
@@ -186,7 +186,7 @@ describe Item do
 		)
 	end
 
-	it 'finds the yaml item with the correct fields' do
+	it 'finds the yaml item with the correct attributes' do
 		File.write(File.join(__dir__, 'tmp', 'all-news-is-good-news.yaml'), <<~HTML)
 			title: All News Is Good News
 			artist_name: Surprise Chef
@@ -198,7 +198,7 @@ describe Item do
 
 		expect(item.id).to eq('all-news-is-good-news')
 		expect(item.collection[:id]).to eq('song')
-		expect(item.fields).to include(
+		expect(item.attributes).to include(
 			:title => 'All News Is Good News',
 			:artist_name => 'Surprise Chef',
 			:created_at => '2024-12-23',
@@ -345,7 +345,7 @@ describe Item do
 		items = Item.where(collection_id: 'poem', status: 'draft')
 
 		expect(items.length).to eq(1)
-		expect(items[0].fields[:status]).to eq('draft')
+		expect(items[0].attributes[:status]).to eq('draft')
 	end
 
 	it 'filters items by search query' do
@@ -462,7 +462,7 @@ describe Item do
 		expect(item).not_to be(nil)
 	end
 
-	it 'correctly updates fields when editing' do
+	it 'correctly updates attributes when editing' do
 		File.write(File.join(__dir__, 'tmp', 'a-poem-about-ruby.html'), <<~HTML)
 			---
 			title: A poem about Ruby
@@ -474,8 +474,8 @@ describe Item do
 			<p>This is a poem about <i>Ruby</i>.</p>
 		HTML
 		item = Item.find('a-poem-about-ruby', 'poem')
-		item.fields[:title] = 'A poem about Haskell'
-		item.fields[:content] = '<p>This is a poem about <i>Haskell</i>.</p>'
+		item.attributes[:title] = 'A poem about Haskell'
+		item.attributes[:content] = '<p>This is a poem about <i>Haskell</i>.</p>'
 		item.update
 
 		expect(File.readlines(File.join(__dir__, 'tmp', 'a-poem-about-ruby.html'), chomp: true)).to include(
@@ -495,7 +495,7 @@ describe Item do
 			<p>This is a poem about <i>Ruby</i>.</p>
 		HTML
 		item = Item.find('a-poem-about-ruby', 'poem')
-		item.fields[:title] = 'Is this working?'
+		item.attributes[:title] = 'Is this working?'
 		item.update
 		timestamp = Time.now.strftime('%Y-%m-%d')
 
@@ -517,7 +517,7 @@ describe Item do
 			<p>This is a poem about <i>Ruby</i>.</p>
 		HTML
 		item = Item.find('a-poem-about-ruby', 'poem')
-		item.fields[:title] = 'A poem about OCaml'
+		item.attributes[:title] = 'A poem about OCaml'
 		item.update
 
 		expect(File.exist?(File.join(__dir__, 'tmp', 'a-poem-about-ruby.html'))).to be(true)

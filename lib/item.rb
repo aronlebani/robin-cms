@@ -4,22 +4,18 @@ require_relative 'constants'
 
 module RobinCMS
 	class Item
-		attr_accessor :fields
-		attr_reader :id, :collection
+		attr_reader :id, :collection, :attributes
 
-		# TODO: change `fields` to `attributes` so it's not confused with collection
-		# fields.
-
-		def initialize(id, collection_id, fields = {})
+		def initialize(id, collection_id, attributes = {})
 			@id = id
-			@fields = fields
+			@attributes = attributes
 			@collection = $cfg[:collections].find { |c| c[:id] == collection_id }
 
-			@fields[:kind] = collection_id
+			@attributes[:kind] = collection_id
 		end
 
-		def fields=(fields)
-			@fields = fields.to_h.transform_keys(&:to_sym)
+		def attributes=(attributes)
+			@attributes = attributes.to_h.transform_keys(&:to_sym)
 		end
 
 		def save
@@ -28,8 +24,8 @@ module RobinCMS
 			FileUtils.mkdir_p(File.join($cfg[:content_dir], @collection[:location]))
 
 			timestamp = Time.now.strftime(DATETIME_FORMAT)
-			@fields[:created_at] = timestamp
-			@fields[:updated_at] = timestamp
+			@attributes[:created_at] = timestamp
+			@attributes[:updated_at] = timestamp
 			File.write(filename, serialize)
 		end
 
@@ -37,7 +33,7 @@ module RobinCMS
 			raise IOError, 'File not found' unless File.exist?(filename)
 
 			timestamp = Time.now.strftime(DATETIME_FORMAT)
-			@fields[:updated_at] = timestamp
+			@attributes[:updated_at] = timestamp
 			File.write(filename, serialize)
 		end
 
@@ -58,7 +54,7 @@ module RobinCMS
 				content = File.read(filename)
 				item = deserialize(id, ext, content)
 
-				return unless item.fields[:kind] == collection_id
+				return unless item.attributes[:kind] == collection_id
 
 				item
 			end
@@ -79,20 +75,20 @@ module RobinCMS
 				by_collection = lambda do |i|
 					return true if collection_id.nil?
 
-					i.fields[:kind] == collection_id
+					i.attributes[:kind] == collection_id
 				end
 
 				by_status = lambda do |i|
 					return true if status.nil? || status == ''
 
-					i.fields[:status] == status
+					i.attributes[:status] == status
 				end
 
 				by_search = lambda do |i|
 					return true if q.nil?
 
 					re = Regexp.new(q, 'i')
-					i.fields[:title].match?(re)
+					i.attributes[:title].match?(re)
 				end
 
 				by_field = lambda do |a, b|
@@ -105,7 +101,7 @@ module RobinCMS
 					when :id
 						a.id <=> b.id
 					when :created_at, :updated_at
-						b.fields[sort_by] <=> a.fields[sort_by]
+						b.attributes[sort_by] <=> a.attributes[sort_by]
 					end * sort_direction
 				end
 
@@ -115,9 +111,9 @@ module RobinCMS
 				   .sort(&by_field)
 			end
 
-			def create(collection_id, fields)
-				id = make_stub(fields[:title])
-				item = new(id, collection_id, fields)
+			def create(collection_id, attributes)
+				id = make_stub(attributes[:title])
+				item = new(id, collection_id, attributes)
 				item.save
 			end
 
@@ -128,16 +124,16 @@ module RobinCMS
 				when '.html'
 					_, frontmatter, content = str.split('---')
 
-					fields = YAML.load(frontmatter, symbolize_names: true)
-					collection_id = fields[:kind]
-					fields[:content] = content.strip
+					attributes = YAML.load(frontmatter, symbolize_names: true)
+					collection_id = attributes[:kind]
+					attributes[:content] = content.strip
 
-					new(id, collection_id, fields)
+					new(id, collection_id, attributes)
 				when '.yaml'
-					fields = YAML.load(str, symbolize_names: true)
-					collection_id = fields[:kind]
+					attributes = YAML.load(str, symbolize_names: true)
+					collection_id = attributes[:kind]
 
-					new(id, collection_id, fields)
+					new(id, collection_id, attributes)
 				end
 			end
 
@@ -161,7 +157,7 @@ module RobinCMS
 		end
 
 		def serialize
-			frontmatter = @fields
+			frontmatter = @attributes
 			frontmatter.delete(:id)
 			frontmatter.delete(:c_id)
 			frontmatter[:kind] = frontmatter[:kind]
