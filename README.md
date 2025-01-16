@@ -6,8 +6,8 @@ Robin CMS is a minimalist flat-file CMS built with Ruby and Sinatra. It is
 designed to be used by developers for creating custom built websites where the
 client needs to be able to update content themselves. It works with any Static
 Site Generator and can also be embedded in a dynamic Sinatra app. The idea is
-that you can just drop it into your project and have a completely customised
-CMS for each website.
+that you can just drop it into your project and it gives you a completely
+customised CMS for your website.
 
 It is completely headless - it gives clients an admin interface where they can
 manage raw content, while giving the developer full control over the HTML and
@@ -15,13 +15,13 @@ CSS. That way clients can't accidentally break layouts and design.
 
 You can define the content model of your website using a YAML file. That way
 you don't have to wrangle all your data into a "blog" post. You can choose to
-store content either as HTML (predominantly for content with long-form rich
-text), or YAML for structured key-value data.
+store content either as HTML (predominantly for content with rich text), or
+YAML for structured key-value data.
 
 Robin CMS is designed to keep things as simple as possible. It uses files to
 store data so you don't have to worry about managing a database. The entire CMS
-can be deployed with just a single `config.ru` file and a `robin.yaml`
-configuration file.
+can be installed with just two files - a two line `config.ru` file and a
+`robin.yaml` configuration file.
 
 ## Motivation
 
@@ -49,8 +49,8 @@ that are commonly found in CMS software have been omitted.
 * Only supports a single user, which means you don't need to maintain a user
   database.
 * Does not support relations between content models. This is the nature of a
-  flat-file CMS. If you need data model relations, you are better of using an
-  SQL database backend rather than a flat-file backend.
+  flat-file CMS. If you need data model relations, you are probably better off
+  using an SQL database backend rather than a flat-file backend.
 * Doesn't support multiple sites. It is designed to be simple enough that you
   can drop in a separate instance of the CMS for each website.
 * Does not have a WYSIWYG editor. It is designed purely for managing structured
@@ -114,9 +114,9 @@ collections:
 That's it. Now run `rackup`, and go to `http://localhost:9292` in your browser.
 You can log in with username "admin" and password "admin".
 
-The admin username and password can be set (in order of priority) either by the
-environment variables `ADMIN_USER` and `ADMIN_PASS`, or in the `robin.yaml`
-config.
+The admin username and password can also be set by the environment variables
+`ADMIN_USER` and `ADMIN_PASS`. This is the recommended approach for a
+production environment.
 
 You'll also need to expose a `SESSION_SECRET` environment variable. If you
 don't, it will create one for you, but it creates a new secret each time
